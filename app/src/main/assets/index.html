@@ -195,6 +195,50 @@ button.ghost:hover{border-color:var(--lamp-dim);color:var(--lamp)}
 .foot span:first-child{flex:1 1 200px;min-width:0}
 .footbtns{display:flex;gap:8px;flex-wrap:wrap;flex:none}
 
+
+/* ---- place & time banner ---- */
+.place{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline;
+  border-left:3px solid var(--lamp-dim);padding:4px 0 4px 12px}
+.place .wh{font-family:var(--font-display);font-size:8px;letter-spacing:.14em;color:var(--lamp);
+  text-transform:uppercase;line-height:1.7}
+.place .wn{font-size:16px;color:var(--parch-dim);font-style:italic}
+
+/* ---- act title card ---- */
+.cardwipe{position:fixed;inset:0;z-index:40;background:var(--ink);display:flex;
+  align-items:center;justify-content:center;padding:24px 16px;
+  animation:wipe 2.1s ease forwards;pointer-events:none}
+.cardwipe .inner{text-align:center;display:flex;flex-direction:column;gap:12px;max-width:520px}
+.cardwipe .ch{font-family:var(--font-display);font-size:8px;letter-spacing:.24em;
+  color:var(--lamp-dim);text-transform:uppercase}
+.cardwipe .ct{font-family:var(--font-display);font-size:clamp(13px,4.4vw,22px);
+  line-height:1.6;color:var(--lamp);text-wrap:balance;text-shadow:0 0 20px rgba(224,178,74,.35)}
+.cardwipe .cw{font-size:17px;color:var(--parch-dim);font-style:italic}
+@keyframes wipe{0%{opacity:0}14%{opacity:1}72%{opacity:1}100%{opacity:0}}
+
+/* ---- floating stat changes ---- */
+.floats{position:fixed;left:50%;top:22%;transform:translateX(-50%);z-index:45;
+  display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none}
+.float{font-family:var(--font-display);font-size:11px;letter-spacing:.1em;
+  padding:7px 11px;border:2px solid currentColor;background:rgba(13,10,22,.92);
+  animation:rise 1.8s ease forwards;white-space:nowrap}
+.float.up{color:var(--lamp)}
+.float.down{color:var(--blood-lit)}
+.float.item{color:var(--sky)}
+.float.mark{color:var(--parch)}
+@keyframes rise{0%{opacity:0;transform:translateY(14px) scale(.92)}
+  18%{opacity:1;transform:translateY(0) scale(1)}
+  74%{opacity:1;transform:translateY(0)}
+  100%{opacity:0;transform:translateY(-22px)}}
+
+/* ---- condition chips ---- */
+.cond{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--font-display);font-size:7px;letter-spacing:.08em;padding:5px 7px;
+  border:1px solid currentColor}
+.chip.hurt{color:var(--blood-lit)}
+.chip.bless{color:var(--lamp)}
+.chip.afraid{color:#b48ad8}
+.chip.armed{color:var(--sky)}
+
 /* ---- splash ---- */
 .splash{position:fixed;inset:0;z-index:50;background:var(--ink);
   background-image:radial-gradient(ellipse 70% 50% at 50% 42%, #231746 0%, var(--ink) 72%);
@@ -268,6 +312,70 @@ function drawGrid(cv, rows, w, h, swap){
 
 /* ================= scenes (32x14) ================= */
 var SCENES = {
+  tent:[
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN","NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNNKNNNNNNNNNNNNNNNN","NNNNNNNNNNNNNNKKKNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNKKTKKNNNNNNNNNNNNNN","NNNNNNNNNNNNKKTTTKKNNNNNNNNNNNNN",
+    "NNNNNNNNNNNKKTTTTTKKNNNNNNNNNNNN","NNNNNNNNNNKKTTTKTTTKKNNNNNNNNNNN",
+    "NNNNNNNNNKKTTTTKTTTTKKNNNNNNNNNN","NNNNNNNNKKTTTTTKTTTTTKKNNNNNNNNN",
+    "NNNNNNNKKTTTTTTKTTTTTTKKNNNNNNNN","YYYYYYYYYYYYYYYKYYYYYYYYYYYYYYYY",
+    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY","YYYYYSYYYYYYYYYYYYYYYSYYYYYYYYYY"],
+  sorek:[
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN","NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+    "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD","DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
+    "DDGGDDDDDDDDGGDDDDDDDDGGDDDDDDDD","DDGGDDDDDDDDGGDDDDDDDDGGDDDDDDDD",
+    "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD","DDDDDDDDOODDDDDDDDDDDDDDDDDDDDDD",
+    "DDDDDDDOGGODDDDDDDDDDDDDDDDDDDDD","DDDDDDDOGGODDDDDDDKKKKKKDDDDDDDD",
+    "DDDDDDDDOODDDDDDDDKDDDDKDDDDDDDD","TTTTTTTTTTTTTTTTTTKDDDDKTTTTTTTT",
+    "TTTTTTTTTTTTTTTTTTKDDDDKTTTTTTTT","TTTTTTTTTTTTTTTTTTKKKKKKTTTTTTTT"],
+  dagon:[
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS","SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SKKSKKSKKSKKSKKSKKSKKSKKSKKSKKSS","SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS","SSSSSWWSSSSSSSSSSSSSSSSSSWWSSSSS",
+    "SSSSSWWSSSSSSSKKSSSSSSSSSSWWSSSS","SSSSSWWSSSSSSSKKSSSSSSSSSSWWSSSS",
+    "SSSSSWWSSSSSSKKKKSSSSSSSSSWWSSSS","SSSSSWWSSSSSKKKKKKSSSSSSSSWWSSSS",
+    "SSSSSWWSSSSSKKKKKKSSSSSSSSWWSSSS","TTTTTWWTTTTTKKKKKKTTTTTTTTWWTTTT",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"],
+  endor:[
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK","KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK","KKKKKKKKKKKKKSSSSKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKSSWWSSKKKKKKKKKKKKKK","KKKKKKKKKKKKSSWWSSKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKSSSSKKKKKKKKKKKKKKK","KKKKKKKKKKKKKKDDKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKDDDDKKKKKKKKKKKKKKK","KKKKKOKKKKKKDDDDDDKKKKKKKKOKKKKK",
+    "KKKKKKKKKKKDDDDDDDDKKKKKKKKKKKKK","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"],
+  gilboa:[
+    "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD","DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
+    "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD","NNNNNNNNNNNNDDDDDDDDNNNNNNNNNNNN",
+    "NNNNNNNNNNDDDDDDDDDDDDNNNNNNNNNN","NNNNNNNNDDDDDDDDDDDDDDDDNNNNNNNN",
+    "NNNNNNDDDDDDDDDDDDDDDDDDDDNNNNNN","NNNNDDDDDDDDDDDDDDDDDDDDDDDDNNNN",
+    "NNDDDDDDDDDDDDDDDDDDDDDDDDDDDDNN","DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TTRTTTTTTRTTTTTTTTTRTTTTTTTRTTTT",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"],
+  palace:[
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN","NNNNWNNNNNNNNNNNNNNNNNNNNWNNNNNN",
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN","SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SKKSSSSSSSSSSSSSSSSSSSSSSSSSKKSS","SKKSSSSSSSSSSSSSSSSSSSSSSSSSKKSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS","SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD","DDGGDDDDDDGGDDDDDDGGDDDDDDGGDDDD",
+    "DDGGDDDDDDGGDDDDDDGGDDDDDDGGDDDD","DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"],
+  vineyard:[
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS","SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE","EETEEEETEEEETEEEETEEEETEEEETEEEE",
+    "EETEEEETEEEETEEEETEEEETEEEETEEEE","EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+    "EETEEEETEEEETEEEETEEEETEEEETEEEE","EETEEEETEEEETEEEETEEEETEEEETEEEE",
+    "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+    "TTTTTTTTRTTTTTTTTTTTTTTTTTTTTTTT","TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"],
+  banquet:[
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK","KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KOKKKKKKKOKKKKKKKKKOKKKKKKKKOKKK","KGKKKKKKKGKKKKKKKKKGKKKKKKKKGKKK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK","SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS","KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK","KKKKKKKKKKKKSSSSSSKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKSKKKKKKSKKKKKKKKKKKKK","TTTTTTTTTTTSKKKKKKSTTTTTTTTTTTTT",
+    "TTTTTTTTTTTSKKKKKKSTTTTTTTTTTTTT","TTTTTTTTTTTSSSSSSSSTTTTTTTTTTTTT"],
   title:[
     "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN","NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
     "NNNNNNNNNNNNNNNONNNNNNNNNNNNNNNN","NNNNNNNNNNNNNNOGONNNNNNNNNNNNNNN",
@@ -453,7 +561,9 @@ var SCENES = {
     "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK","KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
     "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK","KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK"]
 };
-var MOOD = { title:"holy", sodom:"fire", salt:"wind", egypt:"wind", sea:"water", sinai:"fire",
+var MOOD = { tent:"wind", sorek:"stone", dagon:"stone", endor:"stone", gilboa:"wind",
+  palace:"holy", vineyard:"wind", banquet:"fire",
+  title:"holy", sodom:"fire", salt:"wind", egypt:"wind", sea:"water", sinai:"fire",
   jericho:"wind", elah:"wind", gideon:"fire", carmel:"fire", babylon:"stone", lions:"stone",
   galilee:"water", tombs:"stone", golgotha:"wind", rome:"stone", arena:"stone",
   wilderness:"wind", road:"wind", throne:"holy", gate:"holy", abyss:"fire", darkness:"stone" };
@@ -485,6 +595,21 @@ var AVATAR = [
 
 /* ================= foe portraits (16x16) ================= */
 var FOE_ART = {
+  sisera:[
+    "....KKKKKK......","...KDDDDDDK.....","..KDSSSSSSDK....","..KDSKSSKSDK....",
+    "..KDSSSSSSDK....","...KDSWWSDK.....","....KDDDDK......","...KKDDDDKK.....",
+    "..KDDDDDDDDK....",".KDDDDDDDDDDK...","KRKDDDDDDDDKRK..","KRKKDDDDDDKKRK..",
+    "KRK.KDDDDK.KRK..","....KDK.KDK.....","....KDK.KDK.....","...KKKK.KKKK...."],
+  philistine:[
+    "....KKKKKK......","...KBBBBBBK.....","..KBSSSSSSBK....","..KBSKSSKSBK....",
+    "..KBSSSSSSBK....","...KBSSSSBK.....","....KBBBBK......","...KKBBBBKK.....",
+    "..KBBBBBBBBK....",".KBBBBBBBBBBK...","KSKBBBBBBBBKSK..","KSKKBBBBBBKKSK..",
+    "KSK.KBBBBK.KSK..","....KBK.KBK.....","....KBK.KBK.....","...KKKK.KKKK...."],
+  guardsman:[
+    "....KKKKKK......","...KYYYYYYK.....","..KYSSSSSSYK....","..KYSKSSKSYK....",
+    "..KYSSSSSSYK....","...KYSWWSYK.....","....KYYYYK......","...KKYYYYKK.....",
+    "..KYYYYYYYYK....",".KYYYYYYYYYYK...","KSKYYYYYYYYKSK..","KSKKYYYYYYKKSK..",
+    "KSK.KYYYYK.KSK..","....KYK.KYK.....","....KYK.KYK.....","...KKKK.KKKK...."],
   thug:[
     "....KKKKKK......","...KMMMMMMK.....","..KMLLLLLLMK....","..KMLKLLKLMK....",
     "..KMLLLLLLMK....","...KMLWWLMK.....","....KMMMMK......","...KKMMMMKK.....",
@@ -534,6 +659,21 @@ var FOE_ART = {
 
 /* ================= enemies ================= */
 var FOES = {
+  sisera: { art:"sisera", name:"Sisera, Captain of the Host", desc:"Nine hundred chariots answered to him this morning. None of them are coming.",
+    hp:21, dmg:[3,6], guard:2, flee:6,
+    moves:[{t:"takes you by the throat with both hands",w:3},
+           {t:"tells you what Jabin does to households like yours",w:2,fear:true},
+           {t:"drives you back into the tent pole",w:2,stun:true}] },
+  philistine: { art:"philistine", name:"Lord's Man of Gath", desc:"Paid in advance and bored of waiting behind a curtain.",
+    hp:17, dmg:[3,5], guard:2, flee:5,
+    moves:[{t:"cuts at you across the table",w:3},
+           {t:"calls the others in off the yard",w:1,rally:true},
+           {t:"puts a knee into your stomach",w:2,pierce:true}] },
+  guardsman: { art:"guardsman", name:"The Other Watch", desc:"He has a wife in the lower fort and he has done nothing wrong tonight.",
+    hp:16, dmg:[3,5], guard:2, flee:4,
+    moves:[{t:"comes at you still saying your name",w:3},
+           {t:"shouts for the cistern guard",w:1,rally:true},
+           {t:"drives you back toward the open mouth of the cistern",w:2,stun:true}] },
   thug: { art:"thug", name:"Road Brigand", desc:"Three days out of Jerusalem, and he knows the blind corners.",
     hp:12, dmg:[2,4], guard:1, flee:4,
     moves:[{t:"swings a cudgel at your head",w:3},{t:"grabs for your pack",w:2,steal:true},
@@ -620,19 +760,23 @@ var GOOD_MARKS = ["Stood at the Door","Cried the Warning","Blood on the Door","C
   "Stood with Caleb","Scarlet Cord","Walked in the Fire","Shut the Lions' Mouths","Broke the Roof",
   "Left All","Owned Him","Stayed to the End","Gave the Tomb","Hid the Church","Faithful unto Death",
   "Kept Silence","Refused the Mark","Felled the Giant","Broke the Pitchers","Threw Down the Altar",
-  "Loosed the Chains","Spared the Brigand","Carried the Sick","Stood in the Sand"];
+  "Loosed the Chains","Spared the Brigand","Carried the Sick","Stood in the Sand",
+  "The Tent Peg","Warned the Strong Man","Cleared the East Door","Walked the King Out",
+  "Named the Husband","Warned Uriah","Burned the Letter","Refused the Letter","Warned Naboth",
+  "Opened the Grating","Spoke at the Table","Carried the Word"];
 var BAD_MARKS = ["Joined the Mob","Double-Minded","Danced at the Calf","Informer","Achan's Portion",
   "Bowed at Dura","Prayed to the King","Sought Permission","Went Away Sorrowful","Denied Him",
   "Cried Crucify","Betrayer","Offered Incense","Bought the Paper","Recanted","Took the Mark",
-  "Fled the Valley","Left Them Bound","Killed the Beggar"];
+  "Fled the Valley","Left Them Bound","Killed the Beggar",
+  "Looked in the Circle","Carried the Letter","Bore False Witness","Stood the Post"];
 var BETRAYALS = ["Betrayer","Cried Crucify","Offered Incense","Recanted","Denied Him","Took the Mark",
-  "Joined the Mob","Killed the Beggar"];
+  "Joined the Mob","Killed the Beggar","Bore False Witness","Carried the Letter"];
 
 /* ================= story ================= */
 var N = {};
 
 /* ---------- ACT I : SODOM ---------- */
-N.s1 = { act:"Act I — The City of the Plain", scene:"sodom",
+N.s1 = { act:"The City of the Plain", scene:"sodom",
  text:["You come down into the valley with a pack of dyed wool, and Sodom opens its gate the way a mouth opens. The streets smell of myrrh with rot underneath.",
        "A man called Lot will not let you sleep in the open and takes you under his roof. At dusk two strangers come to his door, and the whole city seems to turn its head at once."],
  verse:"Genesis 19:1 — the two angels came to Sodom at even.",
@@ -642,7 +786,7 @@ N.s1 = { act:"Act I — The City of the Plain", scene:"sodom",
   {t:"Go out into the street and see what the city wants with them.", fx:{wisdom:1}, to:"s1b"}
  ]};
 
-N.s1b = { act:"Act I — The City of the Plain", scene:"sodom",
+N.s1b = { act:"The City of the Plain", scene:"sodom",
  text:["The street is full. Men from every quarter pressed against Lot's door, calling for the strangers to be brought out. Lot stands on his step with his arms spread like a man holding back water.",
        "Someone behind you says your name, friendly, and asks whose side you are on."],
  verse:"Genesis 19:4 — the men of the city compassed the house round.",
@@ -657,14 +801,14 @@ N.s1c = { battle:"thug", scene:"sodom",
         "There is no room to go around him and nowhere behind you but the door."],
  win:"s1d", lose:"d_mob", flee:"s2" };
 
-N.s1d = { act:"Act I — The City of the Plain", scene:"sodom",
+N.s1d = { act:"The City of the Plain", scene:"sodom",
  text:["He goes down off the step and the crowd makes a noise like a held breath let out.",
        "Then the strangers put out their hands, pull you and Lot inside, and the men outside the door start groping along the wall, every one of them, because none of them can see."],
  verse:"Genesis 19:11 — they smote them with blindness.",
  fx:{courage:1}, give:["sword"],
  choices:[{t:"Bar the door.", to:"s2"}]};
 
-N.s2 = { act:"Act I — The City of the Plain", scene:"sodom",
+N.s2 = { act:"The City of the Plain", scene:"sodom",
  text:["Before light the strangers take Lot by the hand. The outcry against this place has come up, they say, and they were sent to finish it. Get out. Go to the mountain. Do not look behind you.",
        "Lot's sons-in-law laugh at him and roll over in their beds."],
  verse:"Genesis 19:17 — Escape for thy life; look not behind thee.",
@@ -674,7 +818,7 @@ N.s2 = { act:"Act I — The City of the Plain", scene:"sodom",
   {t:"Go back for the wool. It is a year of your life in those bales.", fx:{faith:-2}, to:"s2c"}
  ]};
 
-N.s2b = { act:"Act I — The City of the Plain", scene:"sodom",
+N.s2b = { act:"The City of the Plain", scene:"sodom",
  text:["You beat on six doors. Two open. Four curse you through the wood.",
        "By the gate the sky behind you has gone the colour of a forge and the air has begun to sing. Somewhere back in the smoke a woman screams your name, and you know the voice from the market."],
  verse:"Genesis 19:24 — the Lord rained upon Sodom brimstone and fire.",
@@ -684,7 +828,7 @@ N.s2b = { act:"Act I — The City of the Plain", scene:"sodom",
   {t:"Shout for her to follow — without slowing, without turning your head.", fx:{wisdom:2}, to:"s3"}
  ]};
 
-N.s2c = { act:"Act I — The City of the Plain", scene:"sodom",
+N.s2c = { act:"The City of the Plain", scene:"sodom",
  text:["You are at your own doorway with the first bale on your shoulder when something comes through the roof opposite and goes on burning on the floor of it, steadily, like it means to stay.",
        "There are two more bales inside and they are the better dye."],
  choices:[
@@ -692,13 +836,13 @@ N.s2c = { act:"Act I — The City of the Plain", scene:"sodom",
   {t:"Two more. You can carry two more.", to:"d_fire"}
  ]};
 
-N.s3 = { act:"Act I — The City of the Plain", scene:"sodom",
+N.s3 = { act:"The City of the Plain", scene:"sodom",
  text:["You reach the ridge above Zoar as the plain goes under. Fire comes down in sheets, and by noon the valley is one flat white glare with ash settling on your shoulders out of season.",
        "Lot's wife is not among those who came up. Nobody explains. You sleep in a cave and wake older than you were."],
  choices:[{t:"Let the years pass.", to:"b1"}]};
 
 /* ---------- ACT II : EGYPT ---------- */
-N.b1 = { act:"Act II — The House of Bondage", scene:"egypt",
+N.b1 = { act:"The House of Bondage", scene:"egypt",
  text:["Four hundred years go by the way a night goes by in a fever. You come back to yourself in Goshen with a brick-maker's hands, cracked white to the wrist with straw dust.",
        "Nine times the land has been struck and nine times Pharaoh has hardened. Tonight an old man with a shepherd's staff walks the lanes telling every household to kill a lamb and put its blood on the door."],
  verse:"Exodus 12:13 — when I see the blood, I will pass over you.",
@@ -708,7 +852,7 @@ N.b1 = { act:"Act II — The House of Bondage", scene:"egypt",
   {t:"Mark the door — and bury an Egyptian charm under the threshold, just in case.", fx:{faith:-1,wisdom:-1}, mark:"Double-Minded", to:"b1c"}
  ]};
 
-N.b1b = { act:"Act II — The House of Bondage", scene:"egypt",
+N.b1b = { act:"The House of Bondage", scene:"egypt",
  text:["The bar goes across at the eleventh hour and it is a good bar. Outside, the lane has gone quiet in a way you have never heard a lane go quiet.",
        "Your wife stands between you and the door with the basin in one hand and a bunch of hyssop in the other, and she has not moved or blinked for some time."],
  choices:[
@@ -716,7 +860,7 @@ N.b1b = { act:"Act II — The House of Bondage", scene:"egypt",
   {t:"Tell her to put it down. You have decided.", to:"d_firstborn"}
  ]};
 
-N.b1c = { act:"Act II — The House of Bondage", scene:"egypt",
+N.b1c = { act:"The House of Bondage", scene:"egypt",
  text:["You are wiping the basin when the door comes off its hinges. An overseer fills the frame with a lamp in one hand and the lash in the other, and he has seen the blood, and he knows exactly what it means.",
        "He says that no one leaves. He says it to you personally."],
  choices:[
@@ -731,7 +875,7 @@ N.b1d = { battle:"overseer", scene:"egypt",
 
 N.b1lose = { check:function(s){ return s.diff !== "martyr"; }, pass:"b1f", fail:"d_lash" };
 
-N.b1f = { act:"Act II — The House of Bondage", scene:"egypt",
+N.b1f = { act:"The House of Bondage", scene:"egypt",
  text:["He puts you on the floor of your own house and the ceiling is burning and you cannot get your arm under you.",
        "Then the cry goes up out of Egypt — the one that comes at midnight — and he hears it, and something happens in his face, and he turns and walks out of your door and keeps walking.",
        "Your wife drags you into the lane by the collar. You are alive. You are not much use for a week."],
@@ -739,13 +883,13 @@ N.b1f = { act:"Act II — The House of Bondage", scene:"egypt",
  fx:{courage:1}, hurt:6,
  choices:[{t:"Let them carry you out.", to:"b2"}]};
 
-N.b1e = { act:"Act II — The House of Bondage", scene:"egypt",
+N.b1e = { act:"The House of Bondage", scene:"egypt",
  text:["He goes down across your own threshold and does not get up, and the house is burning, and your family is already in the lane.",
        "At midnight a cry goes up out of Egypt such as has never been heard in it."],
  fx:{courage:2}, give:["shield"],
  choices:[{t:"Walk out with them.", to:"b2"}]};
 
-N.b2 = { act:"Act II — The House of Bondage", scene:"sea",
+N.b2 = { act:"The House of Bondage", scene:"sea",
  text:["By morning you are walking out with six hundred thousand others, your kneading trough on your shoulder and your neighbour's gold in your belt.",
        "Three days later the sea is in front of you and Pharaoh's chariots are a brown line of dust behind. The wind blows all night. At dawn the water is standing up in two walls with dry mud between them."],
  verse:"Exodus 14:21 — and the waters were divided.",
@@ -755,7 +899,7 @@ N.b2 = { act:"Act II — The House of Bondage", scene:"sea",
   {t:"Go back and kneel to Pharaoh. Slavery is still breathing.", fx:{faith:-3}, to:"p_brick"}
  ]};
 
-N.b3 = { act:"Act II — The House of Bondage", scene:"sinai",
+N.b3 = { act:"The House of Bondage", scene:"sinai",
  text:["Sinai smokes for forty days and Moses does not come down. The camp gets loud, then louder. Aaron takes the gold out of the people's ears, makes a calf of it, and says: these are thy gods.",
        "By the second night there is a feast around it, very little clothing, and the whole valley laughing at once."],
  verse:"Exodus 32:4 — and he made it a molten calf.",
@@ -765,7 +909,7 @@ N.b3 = { act:"Act II — The House of Bondage", scene:"sinai",
   {t:"Walk through the firelight calling them back to the mountain.", req:{faith:9}, fx:{faith:2,courage:2}, mark:"Called Them Back", to:"b4"}
  ]};
 
-N.b3b = { act:"Act II — The House of Bondage", scene:"sinai",
+N.b3b = { act:"The House of Bondage", scene:"sinai",
  text:["Moses comes down with two stone tablets and breaks them at the foot of the mountain. Then he stands in the gate of the camp and asks who is on the Lord's side.",
        "The sons of Levi come to him with swords drawn and begin at the edge of the camp, working inward. You are still holding a cup."],
  choices:[
@@ -773,7 +917,7 @@ N.b3b = { act:"Act II — The House of Bondage", scene:"sinai",
   {t:"Keep dancing. They will not touch a crowd this size.", to:"d_sword"}
  ]};
 
-N.b4 = { act:"Act II — The House of Bondage", scene:"wilderness",
+N.b4 = { act:"The House of Bondage", scene:"wilderness",
  text:["Kadesh-barnea. Twelve men go up to see the land and come back carrying one cluster of grapes on a pole between two of them. Ten are grey in the face. There are giants, they say, and we were as grasshoppers in our own sight.",
        "Caleb and Joshua tear their clothes and say the land is very good. The camp is shouting at once, and someone at the back is already taking names for a captain to lead them back to Egypt."],
  verse:"Numbers 13:30 — we are well able to overcome it.",
@@ -784,14 +928,14 @@ N.b4 = { act:"Act II — The House of Bondage", scene:"wilderness",
   {t:"Say nothing and wait to see which way the camp turns.", fx:{faith:-2,wisdom:-1}, to:"b5"}
  ]};
 
-N.b5 = { act:"Act II — The House of Bondage", scene:"wilderness",
+N.b5 = { act:"The House of Bondage", scene:"wilderness",
  text:["Forty years. You bury your parents in sand and teach your own children to walk in it. The manna comes every single morning and you learn to hate it, and then, late, to love it.",
        "Then one spring the Jordan stands up in a heap and you cross over on dry ground, and you are not young any more."],
  give:["bread"],
  choices:[{t:"Cross over.", to:"j1"}]};
 
 /* ---------- ACT III : JERICHO ---------- */
-N.j1 = { act:"Act III — The Walls of Jericho", scene:"jericho",
+N.j1 = { act:"The Walls of Jericho", scene:"jericho",
  text:["You have lodged in Jericho before. The inn built into the wall takes caravan men and asks nothing; the woman who keeps it is called Rahab.",
        "Tonight two Israelites sit in her common room with the dust of the ford still on them, and there is knocking at the street door, and the king's officers are outside asking after strangers."],
  verse:"Joshua 2:4 — and she hid them.",
@@ -801,7 +945,7 @@ N.j1 = { act:"Act III — The Walls of Jericho", scene:"jericho",
   {t:"Go to your room and shut the door. Not your city, not your war.", to:"j2"}
  ]};
 
-N.j1b = { act:"Act III — The Walls of Jericho", scene:"jericho",
+N.j1b = { act:"The Walls of Jericho", scene:"jericho",
  text:["You come down from the roof with flax dust on your sleeves and a watchman is standing in the stairwell looking up at you, and there is nothing at all in his face.",
        "He asks what is on the roof. He already knows."],
  choices:[
@@ -810,7 +954,7 @@ N.j1b = { act:"Act III — The Walls of Jericho", scene:"jericho",
   {t:"Lie. Flax, and only flax.", req:{wisdom:4}, fx:{wisdom:1}, to:"j2"}
  ]};
 
-N.j1t = { act:"Act III — The Walls of Jericho", scene:"jericho",
+N.j1t = { act:"The Walls of Jericho", scene:"jericho",
  text:["You tell him what is on the roof. He looks at you for a long moment with an expression you cannot read at all, and then takes you down to a room under the gatehouse instead of up the stairs.",
        "He does not go back for the men on the roof. You never find out why, and he is not alive afterwards to ask."],
  verse:"Proverbs 12:19 — the lip of truth shall be established for ever.",
@@ -821,7 +965,7 @@ N.j1t = { act:"Act III — The Walls of Jericho", scene:"jericho",
 N.j1u = { check:function(s){ return s.mercy >= 5 || s.marks.indexOf("Scarlet Cord") >= 0 || s.faith >= 9; },
  pass:"j1v", fail:"d_jericho_jail" };
 
-N.j1v = { act:"Act III — The Walls of Jericho", scene:"jericho",
+N.j1v = { act:"The Walls of Jericho", scene:"jericho",
  text:["On the seventh day the horns go off and the gatehouse comes apart above you, and the grating falls in, and there is suddenly sky where a ceiling was.",
        "Rahab's brother finds you in the rubble because Rahab sent him to look, because you told the truth and the watchman told her so before the end. You climb out through a wall that is no longer a wall."],
  verse:"Joshua 6:25 — and she dwelleth in Israel even unto this day.",
@@ -833,13 +977,13 @@ N.j1c = { battle:"jerichoGuard", scene:"jericho",
         "Rahab is somewhere below with her hand over a child's mouth."],
  win:"j1d", lose:"d_jericho_jail", flee:"d_jericho_jail" };
 
-N.j1d = { act:"Act III — The Walls of Jericho", scene:"jericho",
+N.j1d = { act:"The Walls of Jericho", scene:"jericho",
  text:["It is over quickly and badly and you sit down on the step afterwards with your hands shaking.",
        "Rahab comes up, looks at what is on her stairs, and says nothing about it then or ever. She gives you his sword and a cord of scarlet thread and tells you to tie it in the window and not come out, whatever you hear."],
  fx:{courage:1}, give:["sword","cord"],
  choices:[{t:"Tie the cord in the window.", to:"j2"}]};
 
-N.j2 = { act:"Act III — The Walls of Jericho", scene:"jericho",
+N.j2 = { act:"The Walls of Jericho", scene:"jericho",
  text:["For six days the army walks around the city once a day saying nothing at all, and the men on the wall laugh themselves hoarse. On the seventh they come round seven times.",
        "Then every ram's horn in Israel sounds at once, and the ground starts moving under the city like a mule shrugging off a load."],
  verse:"Joshua 6:20 — the wall fell down flat.",
@@ -853,25 +997,25 @@ N.j2 = { act:"Act III — The Walls of Jericho", scene:"jericho",
 N.j2x = { check:function(s){ return s.mercy >= 4 || s.marks.indexOf("Cried the Warning") >= 0; },
  pass:"j2y", fail:"d_wall" };
 
-N.j2y = { act:"Act III — The Walls of Jericho", scene:"jericho",
+N.j2y = { act:"The Walls of Jericho", scene:"jericho",
  text:["She knows your face from the common room. Her father and mother and brothers are already in that one room and there is no space at all, and she opens the door anyway and pulls you in by the front of your coat.",
        "Nobody speaks. The floor is moving. Somebody's youngest is counting out loud, for no reason anyone works out afterwards."],
  verse:"Joshua 6:25 — and Joshua saved Rahab alive.",
  fx:{faith:1,mercy:1},
  choices:[{t:"Hold on.", to:"j3"}]};
 
-N.j3 = { act:"Act III — The Walls of Jericho", scene:"jericho",
+N.j3 = { act:"The Walls of Jericho", scene:"jericho",
  text:["The wall goes down flat in every direction but one: the strip of masonry your room sits on.",
        "A week later the army is beaten at Ai and thirty-six men die, because somebody took from the devoted spoil. That night you are on watch and you find it in the brush — a wedge of gold and a very fine Babylonish garment — and nobody is looking anywhere near you."],
  verse:"Joshua 7:21 — then I coveted them, and took them.",
  choices:[
   {t:"Take it. Nobody saw. God does not audit brush piles.", fx:{faith:-3}, mark:"Achan's Portion", to:"d_stoned"},
-  {t:"Carry it to Joshua's tent and lay it down in front of him.", fx:{faith:2,wisdom:1}, to:"e1"},
-  {t:"Leave it where it lies and say nothing to anyone.", fx:{wisdom:-1}, to:"e1"}
+  {t:"Carry it to Joshua's tent and lay it down in front of him.", fx:{faith:2,wisdom:1}, to:"ja1"},
+  {t:"Leave it where it lies and say nothing to anyone.", fx:{wisdom:-1}, to:"ja1"}
  ]};
 
 /* ---------- ACT IV : THE VALLEY OF ELAH ---------- */
-N.e1 = { act:"Act IV — The Valley of Elah", scene:"elah", newact:true,
+N.e1 = { act:"The Valley of Elah", scene:"elah", newact:true,
  text:["Two hundred years. You are a shield-bearer now, which means you are forty and still carrying someone else's armour.",
        "Israel holds one ridge and the Philistines hold the other, and every morning for forty days a man has come down into the gap between them and asked for somebody to fight him. Nobody has gone. The whole army is sick with it."],
  verse:"1 Samuel 17:16 — and the Philistine drew near morning and evening, forty days.",
@@ -880,7 +1024,7 @@ N.e1 = { act:"Act IV — The Valley of Elah", scene:"elah", newact:true,
   {t:"Stay with the baggage. Forty days is a long time to still be alive.", fx:{courage:-1}, to:"e2b"}
  ]};
 
-N.e2 = { act:"Act IV — The Valley of Elah", scene:"elah",
+N.e2 = { act:"The Valley of Elah", scene:"elah",
  text:["He is not a story. He is a man the size of a doorway with a shield-bearer of his own walking in front of him, and the spearhead alone would weigh more than your arm.",
        "Behind you a boy has arrived with bread and cheese for his brothers, and he is asking, in a carrying voice, who this uncircumcised Philistine is that he should defy the armies of the living God. Men are laughing at him. The king's officers are not."],
  verse:"1 Samuel 17:26 — who is this uncircumcised Philistine?",
@@ -890,13 +1034,13 @@ N.e2 = { act:"Act IV — The Valley of Elah", scene:"elah",
   {t:"Tell the boy to go home to his sheep before he gets killed.", fx:{faith:-1}, to:"e2b"}
  ]};
 
-N.e2b = { act:"Act IV — The Valley of Elah", scene:"elah",
+N.e2b = { act:"The Valley of Elah", scene:"elah",
  text:["You go back to the baggage and you are still there at noon when the valley makes a sound you have never heard an army make.",
        "By the time you get to the ridge it is finished. Somebody has killed him. Somebody very small. The Philistines are running and Israel is going down the hill after them, and you are standing by the packs with your hand still on a strap."],
  fx:{courage:-1}, mark:"Fled the Valley",
  choices:[{t:"Follow them down.", to:"e5"}]};
 
-N.e2c = { act:"Act IV — The Valley of Elah", scene:"elah",
+N.e2c = { act:"The Valley of Elah", scene:"elah",
  text:["Saul puts his own armour on the boy and the boy cannot walk in it, and takes it off again, and goes down to the brook instead and picks up five smooth stones.",
        "The king looks at you and asks, quietly, whether you will go down with him as far as the brook. It is not an order."],
  choices:[
@@ -911,28 +1055,28 @@ N.e3 = { battle:"goliath", scene:"elah",
         "Then he curses you by every god he has, and starts walking."],
  win:"e3win", lose:"d_elah", flee:"e2b" };
 
-N.e3win = { act:"Act IV — The Valley of Elah", scene:"elah",
+N.e3win = { act:"The Valley of Elah", scene:"elah",
  text:["He comes down like a wall coming down and the ground takes it badly, and the noise out of the Philistine line is not a battle cry, it is forty days of certainty going out of an army at once.",
        "A boy with a sling is standing at the brook with his mouth open. You never do find out his name that day. You find it out later, with everyone else."],
  verse:"1 Samuel 17:50 — but there was no sword in the hand of David.",
  fx:{courage:3,faith:2}, mark:"Felled the Giant", give:["sling"],
  choices:[{t:"Pick up the spear.", to:"e5"}]};
 
-N.e4 = { act:"Act IV — The Valley of Elah", scene:"elah",
+N.e4 = { act:"The Valley of Elah", scene:"elah",
  text:["He does not use the sword. He does not even break stride. One stone out of the brook, slung underhand while still walking, and the giant goes down on his face toward Israel.",
        "Afterwards the boy comes back up the slope past you, carrying a head he can barely lift, and says thank you for walking down with him, as though that had been the hard part."],
  verse:"1 Samuel 17:49 — and the stone sunk into his forehead.",
  fx:{faith:3,courage:1}, give:["sling"],
  choices:[{t:"Go down the hill with the rest of them.", to:"e5"}]};
 
-N.e5 = { act:"Act IV — The Valley of Elah", scene:"road",
+N.e5 = { act:"The Valley of Elah", scene:"road",
  text:["The years after are good and then they are not. Saul goes strange, then dangerous, then dead on a mountain. The boy from the brook is king and then an old man.",
        "You are on the Jericho road in the dark when somebody steps out of the rocks ahead of you, and there is a man lying in the ditch behind him who has already been attended to."],
  verse:"Luke 10:30 — and fell among thieves.",
  choices:[
   {t:"Fight him. There is a man in the ditch still breathing.", fx:{courage:1}, to:"r_fight"},
   {t:"Give him the purse and ask to pass.", fx:{wisdom:1,courage:-1}, to:"r_pass"},
-  {t:"Run. Both of them are somebody else's problem.", fx:{mercy:-2,faith:-1}, to:"gi1"}
+  {t:"Run. Both of them are somebody else's problem.", fx:{mercy:-2,faith:-1}, to:"en1"}
  ]};
 
 N.r_fight = { battle:"thug", scene:"road",
@@ -940,24 +1084,24 @@ N.r_fight = { battle:"thug", scene:"road",
         "The man in the ditch is making a sound like a kettle."],
  win:"r_win", lose:"d_road", flee:"r_pass" };
 
-N.r_win = { act:"Act IV — The Valley of Elah", scene:"road",
+N.r_win = { act:"The Valley of Elah", scene:"road",
  text:["He breaks and goes into the rocks and you let him go, which is the part you think about afterwards.",
        "The man in the ditch is a stranger and the wrong sort of stranger, from the wrong province, and he has been stripped and left. You have one flask of oil and a long way to the nearest inn."],
  verse:"Luke 10:34 — and bound up his wounds, pouring in oil and wine.",
  choices:[
-  {t:"Bind him with the oil and carry him to the inn on your own back.", fx:{mercy:3,faith:2}, mark:"Carried the Sick", give:["widow"], to:"gi1"},
-  {t:"Leave him the flask and your cloak and go on. You will send word.", fx:{mercy:1}, to:"gi1"},
-  {t:"Take what the brigand dropped and go.", fx:{mercy:-3,faith:-2}, mark:"Killed the Beggar", to:"gi1"}
+  {t:"Bind him with the oil and carry him to the inn on your own back.", fx:{mercy:3,faith:2}, mark:"Carried the Sick", give:["widow"], to:"en1"},
+  {t:"Leave him the flask and your cloak and go on. You will send word.", fx:{mercy:1}, to:"en1"},
+  {t:"Take what the brigand dropped and go.", fx:{mercy:-3,faith:-2}, mark:"Killed the Beggar", to:"en1"}
  ]};
 
-N.r_pass = { act:"Act IV — The Valley of Elah", scene:"road",
+N.r_pass = { act:"The Jericho Road", scene:"road",
  text:["He takes the purse and steps aside and even gives you a small ironic bow, and you walk past the ditch without looking into it.",
        "You hear about it for years. Not from anyone else."],
  fx:{mercy:-1}, mark:"Spared the Brigand",
- choices:[{t:"Walk on.", to:"gi1"}]};
+ choices:[{t:"Walk on.", to:"en1"}]};
 
 /* ---------- ACT V : GIDEON ---------- */
-N.gi1 = { act:"Act V — The Three Hundred", scene:"gideon", newact:true,
+N.gi1 = { act:"The Three Hundred", scene:"gideon", newact:true,
  text:["Midian has been coming over the Jordan at harvest for seven years, as many as locusts, and Israel has been living in caves and threshing wheat in winepresses to hide the dust.",
        "A man called Gideon has called up thirty-two thousand. Then he sends twenty-two thousand home because they are afraid, which is allowed. Then he takes the rest to the water and sends home everyone who kneels to drink, and there are three hundred of you left, and the Midianite camp fills the valley floor like spilled grain."],
  verse:"Judges 7:7 — by the three hundred men that lapped will I save you.",
@@ -967,14 +1111,14 @@ N.gi1 = { act:"Act V — The Three Hundred", scene:"gideon", newact:true,
   {t:"Stay, and go down that night to listen at the enemy's tents.", fx:{wisdom:4,courage:1}, to:"gi1b"}
  ]};
 
-N.gi1b = { act:"Act V — The Three Hundred", scene:"gideon",
+N.gi1b = { act:"The Three Hundred", scene:"gideon",
  text:["You crawl down to the edge of the camp on your stomach and lie under a thorn bush listening to two men talk.",
        "One of them has dreamt of a cake of barley bread tumbling into the camp and knocking a tent flat. The other says: this is nothing else but the sword of Gideon. And they are both frightened, and you are lying in the dark ten feet away discovering that they have been frightened of you this whole time."],
  verse:"Judges 7:14 — into his hand hath God delivered Midian.",
  fx:{courage:2,faith:2},
  choices:[{t:"Crawl back and tell him.", to:"gi2"}]};
 
-N.gi2 = { act:"Act V — The Three Hundred", scene:"gideon",
+N.gi2 = { act:"The Three Hundred", scene:"gideon",
  text:["The plan is this, and it is insane. Each man gets a trumpet, an empty clay pitcher, and a torch inside the pitcher. No sword in your hand at all — your hands will be full.",
        "At the middle watch, three hundred of you stand in a ring around an army and smash the pitchers all at once."],
  verse:"Judges 7:20 — the sword of the Lord, and of Gideon.",
@@ -984,7 +1128,7 @@ N.gi2 = { act:"Act V — The Three Hundred", scene:"gideon",
   {t:"This is suicide. Slip away before the watch changes.", fx:{faith:-3,courage:-2}, to:"gi_home"}
  ]};
 
-N.gi3 = { act:"Act V — The Three Hundred", scene:"gideon",
+N.gi3 = { act:"The Three Hundred", scene:"gideon",
  text:["Three hundred pitchers break on the same beat and three hundred torches come up out of the dark at once, all the way round, and three hundred trumpets go off, and then every man stands still in his place and shouts.",
        "The camp comes awake into a ring of fire and noise and kills itself in the dark. Midianites run into Midianites. It is the worst thing you have ever watched and you are not touching anybody.",
        "Then one of them comes straight up the slope at your torch with a sword out, awake enough to have worked out that the fire is only men."],
@@ -998,21 +1142,21 @@ N.gi4 = { battle:"midianite", scene:"gideon",
         "Your torch is on the ground between you, still burning."],
  win:"gi5", lose:"d_midian", flee:"gi5" };
 
-N.gi5 = { act:"Act V — The Three Hundred", scene:"gideon",
+N.gi5 = { act:"The Three Hundred", scene:"gideon",
  text:["By grey light the valley is empty except for what was left in it. Three hundred men are sitting down all over the ridge, not talking.",
        "Afterwards they come to Gideon and ask him to rule over them, and he says no, the Lord shall rule over you — and then asks every man for one gold earring out of the spoil, and makes a thing of it, and all Israel goes whoring after it. That is a different grief and it takes years."],
  verse:"Judges 8:27 — and all Israel went thither a whoring after it.",
  give:["sword"],
- choices:[{t:"Grow old. Watch the kings get worse.", to:"c1"}]};
+ choices:[{t:"Grow old. Watch the kings get worse.", to:"sa1"}]};
 
-N.gi_home = { act:"Act V — The Three Hundred", scene:"gideon",
+N.gi_home = { act:"The Three Hundred", scene:"gideon",
  text:["You go home over the hills with twenty-two thousand other men, and in the night the whole southern sky lights up behind you and stays lit.",
        "Nobody blames you. Being afraid was allowed; it was in the terms. You just have to carry it now, which was also in the terms and nobody said so."],
  fx:{faith:-1},
- choices:[{t:"Go home.", to:"c1"}]};
+ choices:[{t:"Go home.", to:"sa1"}]};
 
 /* ---------- ACT VI : CARMEL ---------- */
-N.c1 = { act:"Act VI — The Fire on Carmel", scene:"carmel", newact:true,
+N.c1 = { act:"The Fire on Carmel", scene:"carmel", newact:true,
  text:["Three years without rain. Ahab is king and Jezebel has been killing prophets methodically, and a man named Obadiah has a hundred of them hidden in two caves and feeds them bread and water out of the king's own stores.",
        "Now Elijah has called everyone to Carmel: the king, the people, and four hundred and fifty prophets of Baal. Two bullocks, two altars, no fire. Whichever god answers by fire, that one is God."],
  verse:"1 Kings 18:21 — how long halt ye between two opinions?",
@@ -1022,7 +1166,7 @@ N.c1 = { act:"Act VI — The Fire on Carmel", scene:"carmel", newact:true,
   {t:"Go to the caves instead and carry bread to the hidden prophets.", fx:{mercy:3,faith:1}, give:["bread"], to:"c2"}
  ]};
 
-N.c2 = { act:"Act VI — The Fire on Carmel", scene:"carmel",
+N.c2 = { act:"The Fire on Carmel", scene:"carmel",
  text:["They call on Baal from morning to noon. Nothing. Elijah suggests, pleasantly, that their god may be talking, or pursuing, or on a journey, or asleep and in need of waking.",
        "So they shout louder and cut themselves with knives and lancets till the blood gushes out, and go on till the time of the evening sacrifice, and there is no voice, nor any to answer, nor any that regarded.",
        "One of them has stopped cutting and is looking across the hill at you."],
@@ -1038,7 +1182,7 @@ N.c3 = { battle:"baalProphet", scene:"carmel",
         "Nobody on either hill moves to stop him."],
  win:"c4", lose:"d_carmel", flee:"c4" };
 
-N.c4 = { act:"Act VI — The Fire on Carmel", scene:"carmel",
+N.c4 = { act:"The Fire on Carmel", scene:"carmel",
  text:["Elijah builds twelve stones into an altar, digs a trench round it, and has four barrels of water poured over the sacrifice three times until the trench is full. In the third year of a drought. Nobody objects, which tells you something about the state everyone is in.",
        "Then he says about forty words. And the fire of the Lord falls and takes the sacrifice, and the wood, and the stones, and the dust, and licks up the water in the trench.",
        "Every person on that hill goes down on their face at the same instant, including you, and you do not remember deciding to."],
@@ -1047,7 +1191,7 @@ N.c4 = { act:"Act VI — The Fire on Carmel", scene:"carmel",
  choices:[{t:"Get up when you can.", to:"k1"}]};
 
 /* ---------- ACT VII : BABYLON ---------- */
-N.k1 = { act:"Act VII — The Plain of Dura", scene:"babylon", newact:true,
+N.k1 = { act:"The Plain of Dura", scene:"babylon", newact:true,
  text:["The kings get worse and then there are no kings. The temple burns. You walk east in a line of captives into a country of flat rivers and tall towers.",
        "An image of gold ninety feet high, a herald, and behind the herald a furnace they have been feeding since before dawn. When the music plays, everyone goes down. When it stops, anyone still standing goes into the fire. The flutes start."],
  verse:"Daniel 3:6 — whoso falleth not down shall be cast into the furnace.",
@@ -1058,25 +1202,25 @@ N.k1 = { act:"Act VII — The Plain of Dura", scene:"babylon", newact:true,
   {t:"Stay up, and when they come, say you were only stretching.", fx:{faith:-2,courage:-1}, to:"k2"}
  ]};
 
-N.k1b = { act:"Act VII — The Plain of Dura", scene:"babylon",
+N.k1b = { act:"The Plain of Dura", scene:"babylon",
  text:["Three others are standing: three young men of Judah, further down the line, and not one of them looks at you.",
        "The king goes the colour of brick and orders the furnace heated seven times hotter, and the men who carry you to the mouth of it die of the heat on the way. You go in. And you do not burn. You are walking about in there, the four of you — and then there are five, and the fifth is not bound, and does not look like a man."],
  verse:"Daniel 3:25 — and the form of the fourth is like the Son of God.",
  fx:{faith:3,courage:2}, mark:"Walked in the Fire",
  choices:[{t:"Walk out.", to:"k2"}]};
 
-N.k2 = { act:"Act VII — The Plain of Dura", scene:"babylon",
+N.k2 = { act:"The Plain of Dura", scene:"babylon",
  text:["Years later, under a different king, the presidents of the realm draft a very pretty law: for thirty days no one may ask anything of any god or man except the king, on pain of the lions.",
        "Your window opens toward Jerusalem. They have put a man in the street below it who does nothing all day but watch windows."],
  verse:"Daniel 6:10 — his windows being open toward Jerusalem.",
  choices:[
   {t:"Open the window at the third hour and kneel, as you always have.", fx:{courage:2,faith:1}, to:"k2b"},
-  {t:"Pray in the cellar where nobody can see you.", fx:{wisdom:1,faith:-1}, to:"g1"},
-  {t:"Make your petitions to the king, as the law says.", fx:{faith:-3}, mark:"Prayed to the King", to:"g1"},
-  {t:"Stop praying for thirty days. It is only thirty days.", fx:{faith:-2}, to:"g1"}
+  {t:"Pray in the cellar where nobody can see you.", fx:{wisdom:1,faith:-1}, to:"he1"},
+  {t:"Make your petitions to the king, as the law says.", fx:{faith:-3}, mark:"Prayed to the King", to:"he1"},
+  {t:"Stop praying for thirty days. It is only thirty days.", fx:{faith:-2}, to:"he1"}
  ]};
 
-N.k2b = { act:"Act VII — The Plain of Dura", scene:"lions",
+N.k2b = { act:"The Plain of Dura", scene:"lions",
  text:["They let you down on a rope at sundown and roll a stone over the mouth of the den.",
        "There are seven of them and they have not been fed for two days on purpose. One stands up."],
  choices:[
@@ -1089,15 +1233,15 @@ N.k2d = { battle:"lion", scene:"lions",
         "There is no door behind you and no rope any more."],
  win:"k2c", lose:"d_lions", flee:"d_lions" };
 
-N.k2c = { act:"Act VII — The Plain of Dura", scene:"lions",
+N.k2c = { act:"The Plain of Dura", scene:"lions",
  text:["Something stands between you and them for the rest of that night. They lie along the wall with their heads on their paws like dogs by a fire, and one of them sighs.",
        "At first light the stone comes off and the king, who has not eaten or slept, shouts down into the dark to ask whether your God was able."],
  verse:"Daniel 6:22 — my God hath sent his angel, and hath shut the lions' mouths.",
  fx:{faith:2},
- choices:[{t:"Climb out.", to:"g1"}]};
+ choices:[{t:"Climb out.", to:"he1"}]};
 
 /* ---------- ACT VIII : THE TEACHER ---------- */
-N.g1 = { act:"Act VIII — The Teacher", scene:"galilee", newact:true,
+N.g1 = { act:"The Teacher", scene:"galilee", newact:true,
  text:["Cyrus lets the exiles go home. The second temple is smaller, and the old men who remember the first weep when the foundation is laid while the young men cheer, and from a distance you cannot tell the two sounds apart. Then four hundred years, and no prophet in any of them.",
        "Now: a crowd on the shore near Capernaum, thick enough that the teacher has got into a boat and pushed out so the water will carry his voice. Your purse is heavy. You did well in the silence."],
  verse:"Mark 4:1 — and he taught them many things by parables.",
@@ -1108,7 +1252,7 @@ N.g1 = { act:"Act VIII — The Teacher", scene:"galilee", newact:true,
   {t:"Go and ask the Pharisees first whether this man is approved.", fx:{wisdom:-1,faith:-1}, mark:"Sought Permission", to:"g2"}
  ]};
 
-N.g1b = { act:"Act VIII — The Teacher", scene:"galilee",
+N.g1b = { act:"The Teacher", scene:"galilee",
  text:["He looks at you, and keeps looking, and you have the particular sensation of being read front to back by someone who is not in a hurry.",
        "Then he says you lack one thing. Go, sell what you have, give it to the poor, and come follow me."],
  verse:"Mark 10:21 — then Jesus beholding him loved him.",
@@ -1118,7 +1262,7 @@ N.g1b = { act:"Act VIII — The Teacher", scene:"galilee",
   {t:"Offer him half and keep half back for the household.", fx:{faith:-1,wisdom:1}, to:"g2"}
  ]};
 
-N.g2 = { act:"Act VIII — The Teacher", scene:"tombs",
+N.g2 = { act:"The Teacher", scene:"tombs",
  text:["They cross to the other side at evening and you go in the second boat. On the far shore, in the burying ground, there is a man living among the tombs who nobody can bind any more, not even with chains, and he cuts himself with stones night and day.",
        "He comes down the slope at the landing place at a dead run, and everyone in your boat goes back a step except the teacher, who does not."],
  verse:"Mark 5:4 — neither could any man tame him.",
@@ -1133,14 +1277,14 @@ N.g2b = { battle:"demoniac", scene:"tombs",
         "Something in him knows your name and uses it."],
  win:"g2c", lose:"d_tombs", flee:"g3" };
 
-N.g2c = { act:"Act VIII — The Teacher", scene:"tombs",
+N.g2c = { act:"The Teacher", scene:"tombs",
  text:["The teacher asks it its name and it answers, and what comes out of the man goes into the pigs on the hillside, and two thousand of them go down the steep place into the sea and are drowned.",
        "An hour later the man is sitting on a rock with somebody's spare cloak on, clothed and in his right mind, asking quietly whether he can come with them. He is told to go home instead and tell his own people. He looks like he has been handed the world."],
  verse:"Mark 5:15 — sitting, and clothed, and in his right mind.",
  fx:{faith:2,mercy:2}, mark:"Loosed the Chains",
  choices:[{t:"Row back across.", to:"g3"}]};
 
-N.g3 = { act:"Act VIII — The Teacher", scene:"golgotha",
+N.g3 = { act:"The Teacher", scene:"golgotha",
  text:["Three years. Then a Thursday: torches in an olive grove, a kiss, a servant's ear on the ground, and a sword being put away again.",
        "They take him to the high priest's house and you follow a long way back. In the courtyard there is a charcoal fire and you stand at it to get warm, and the girl who keeps the door looks at your face too long and says, loudly, that this one was with him."],
  verse:"Luke 22:56 — this man was also with him.",
@@ -1150,13 +1294,13 @@ N.g3 = { act:"Act VIII — The Teacher", scene:"golgotha",
   {t:"Say nothing. Set down the cup and walk out through the gate.", fx:{faith:-1}, to:"g4"}
  ]};
 
-N.g3b = { act:"Act VIII — The Teacher", scene:"golgotha",
+N.g3b = { act:"The Teacher", scene:"golgotha",
  text:["They take you into the yard and work you over with the flat of a spear and throw you into the street before dawn, and the cold is what wakes you.",
        "From where you are lying you can see the hill."],
  fx:{courage:1},
  choices:[{t:"Get up.", to:"g4"}]};
 
-N.g4 = { act:"Act VIII — The Teacher", scene:"golgotha",
+N.g4 = { act:"The Teacher", scene:"golgotha",
  text:["Golgotha, the third hour. Two thieves and him in the middle. At noon the sky goes the colour of an old bruise and stays that way for three hours, and the crowd thins as people get frightened and remember somewhere else to be.",
        "His mother is standing where she can still see his face."],
  verse:"Matthew 27:45 — there was darkness over all the land.",
@@ -1167,14 +1311,14 @@ N.g4 = { act:"Act VIII — The Teacher", scene:"golgotha",
   {t:"Take up the shout with the crowd.", fx:{faith:-6}, mark:"Cried Crucify", to:"g5"}
  ]};
 
-N.g5 = { act:"Act VIII — The Teacher", scene:"golgotha",
+N.g5 = { act:"The Teacher", scene:"golgotha",
  text:["On the first day of the week the stone is off and the grave-clothes are lying folded, and the men who say they have seen him will not stop saying it no matter what is done to them.",
        "Fifty days later there is a sound in an upper room like a hard wind coming through a door, and men from every nation in the street below hear their own mother tongue coming out of fishermen."],
  give:["anoint"],
  choices:[{t:"Go out into the city.", to:"ro1"}]};
 
 /* ---------- ACT IX : ROME ---------- */
-N.ro1 = { act:"Act IX — The Arena", scene:"rome", newact:true,
+N.ro1 = { act:"The Arena", scene:"rome", newact:true,
  text:["Saul of Tarsus goes house to house in Jerusalem hauling out men and women both. Then he is knocked off a road and becomes the worst problem the other side has ever had.",
        "Tonight there are twelve believers in your cellar, horses in your street, and a captain of the temple guard in your doorway asking, quite politely, whether anyone has come to you."],
  verse:"Acts 8:3 — he made havock of the church.",
@@ -1184,7 +1328,7 @@ N.ro1 = { act:"Act IX — The Arena", scene:"rome", newact:true,
   {t:"Slip out the back window and leave the cellar to its luck.", fx:{faith:-1,courage:-2}, to:"ro2"}
  ]};
 
-N.ro2 = { act:"Act IX — The Arena", scene:"rome",
+N.ro2 = { act:"The Arena", scene:"rome",
  text:["Thirty years and three thousand miles later you are old, and in Rome, and Rome has burned and has decided it was your fault.",
        "The magistrate is almost kind about it. There is a brazier on a tripod and a box of incense beside it. A pinch on the coals, a few words about the genius of Caesar, and you may go home to your grandchildren tonight."],
  verse:"Revelation 2:10 — be thou faithful unto death.",
@@ -1195,7 +1339,7 @@ N.ro2 = { act:"Act IX — The Arena", scene:"rome",
   {t:"Refuse, and say nothing else at all.", fx:{faith:2}, to:"ro2b"}
  ]};
 
-N.ro2b = { act:"Act IX — The Arena", scene:"rome",
+N.ro2b = { act:"The Arena", scene:"rome",
  text:["They put you in the Mamertine, which is a hole under the street with a second hole under that one, and you are in it for eleven days.",
        "On the eleventh a secretary comes down with a wax tablet and explains, reasonably, that a single sentence opens the door, that nobody upstairs will hear of it, and that your family is at home and has not eaten."],
  verse:"Psalm 39:2 — I was dumb with silence, I held my peace.",
@@ -1207,13 +1351,13 @@ N.ro2b = { act:"Act IX — The Arena", scene:"rome",
 
 N.ro2c = { check:function(s){ return s.courage >= 30; }, pass:"ro2d", fail:"p_mamertine" };
 
-N.ro2d = { act:"Act IX — The Arena", scene:"rome",
+N.ro2d = { act:"The Arena", scene:"rome",
  text:["Forty days. You stop being able to tell the difference between having your eyes open and having them shut, and you keep not saying it, mostly out of habit by the end.",
        "Then Nero opens his own throat in a villa outside the city and the whole machine stops at once, and a new magistrate finds your case tedious, and they put you out into a street you do not recognise at nine in the morning."],
  fx:{faith:3}, mark:"Kept Silence",
  choices:[{t:"Walk home.", to:"f1"}]};
 
-N.ro3 = { act:"Act IX — The Arena", scene:"arena",
+N.ro3 = { act:"The Arena", scene:"arena",
  text:["They do not bother with the prison. They put you through a gate into about an acre of raked sand with fifty thousand people above it, and shut the gate behind you.",
        "Across the sand another gate is going up, slowly, on a windlass, and whatever is behind it has already smelled you."],
  verse:"1 Corinthians 15:32 — I have fought with beasts at Ephesus.",
@@ -1228,14 +1372,14 @@ N.ro4 = { battle:"beast", scene:"arena",
         "Fifty thousand people are standing up at once."],
  win:"ro5", lose:"d_arena", flee:"d_arena" };
 
-N.ro_kneel = { act:"Act IX — The Arena", scene:"arena",
+N.ro_kneel = { act:"The Arena", scene:"arena",
  text:["You kneel down in the middle and shut your eyes and say the only words you have left, which are not very good ones.",
        "It comes across the sand and stops. You hear it breathing somewhere near your shoulder for a long time. Then it turns around and walks back toward its own gate, and will not be driven out again, and the crowd starts to boo, and then the booing goes strange and uncertain and dies out."],
  verse:"Daniel 6:22 — my God hath sent his angel.",
  fx:{faith:3}, mark:"Stood in the Sand",
  choices:[{t:"Get up off your knees.", to:"ro5"}]};
 
-N.ro5 = { act:"Act IX — The Arena", scene:"rome",
+N.ro5 = { act:"The Arena", scene:"rome",
  text:["They take you out through the gate you came in by, because nobody has a procedure for this.",
        "That night in the cell the man in the next hole asks you, through the wall, what it was like. You tell him. He is baptized three weeks later in a bucket. You never learn his name."],
  verse:"Philippians 1:12 — the things which happened unto me have fallen out rather unto the furtherance of the gospel.",
@@ -1246,7 +1390,7 @@ N.ro5 = { act:"Act IX — The Arena", scene:"rome",
  ]};
 
 /* ---------- ACT X : THE LAST DAY ---------- */
-N.ro_martyr = { act:"Act IX — The Arena", scene:"rome",
+N.ro_martyr = { act:"The Arena", scene:"rome",
  text:["You sing for most of the night, badly, and the man in the next hole learns the words and joins in, and the guard on the stair does not stop you because he has started listening.",
        "They take you up in the morning. It is quick, and public, and three people in that crowd are baptized before the month is out because of your face. You are dead before noon.",
        "And it is the smallest thing that happens to you that day, because the dying takes a minute and what comes next does not end."],
@@ -1254,7 +1398,7 @@ N.ro_martyr = { act:"Act IX — The Arena", scene:"rome",
  fx:{faith:6},
  choices:[{t:"Open your eyes.", to:"f2"}]};
 
-N.f1 = { act:"Act X — The Last Day", scene:"babylon", newact:true,
+N.f1 = { act:"The Last Day", scene:"babylon", newact:true,
  text:["The world goes strange: a rumour of an old man on an island writing down what he sees, stars behaving badly, and everywhere a new order that everyone agrees is for the best.",
        "There is an image again, and a decree again, and a mark on the right hand or the forehead, and without it you cannot buy bread or sell wool or be seen by a physician. Your family has not eaten in two days. The office is open until dark and the queue outside it is quiet and well-behaved and very long."],
  verse:"Revelation 13:17 — that no man might buy or sell, save he that had the mark.",
@@ -1264,7 +1408,7 @@ N.f1 = { act:"Act X — The Last Day", scene:"babylon", newact:true,
   {t:"Take no side. Go up into the hills and wait it out.", fx:{faith:-1}, to:"f2"}
  ]};
 
-N.f2 = { act:"Act X — The Last Day", scene:"throne",
+N.f2 = { act:"The Last Day", scene:"throne",
  text:["The sky is rolled back on itself like a scroll and every mountain and island goes out of its place, and there is nowhere left standing to be neutral in.",
        "A great white throne, and one sitting on it, and the books opened, and another book, which is the book of life. The dead come up out of the sea and out of the ground.",
        "Something steps up beside you with the ledger already open. It has been preparing for this conversation your entire life."],
@@ -1287,6 +1431,444 @@ N.judgement = { compute:function(s){
   if (s.faith >= 38) return "e_fire";
   return "e_dark";
 }};
+
+/* ================= NEW ACTS : the dangerous ones ================= */
+
+/* ---------- THE TENT OF JAEL ---------- */
+N.ja1 = { act:"The Tent of Jael", scene:"tent", newact:true, where:"Kedesh · the oaks of Zaanaim", when:"Afternoon, after the battle",
+ text:["Nine hundred chariots of iron came down to the river Kishon this morning. The river is still carrying them away.",
+       "You are pegging down the north side of the tent when a man comes out of the scrub, and you know him before he is ten paces off. Everyone in the valley knows that face. Sisera, captain of the host of Jabin, on foot, with no armour and no sword and his tongue swollen in his mouth.",
+       "'Water,' he says. 'Please.'",
+       "He does not know whose tent this is. He thinks it is friendly ground."],
+ verse:"Judges 4:17 — Sisera fled away on his feet to the tent of Jael.",
+ choices:[
+  {t:"Give him water and point him toward the hills. Let him run.", fx:{mercy:2,faith:-1}, to:"ja2"},
+  {t:"Open a skin of milk, cover him with a rug, and tell him to sleep.", fx:{wisdom:3,courage:1}, to:"ja3"},
+  {t:"Tell him exactly whose tent this is, and give him his chance.", fx:{courage:3,faith:1}, to:"ja_fight"},
+  {t:"Shout for Barak's men. Let somebody else decide this.", fx:{wisdom:1,courage:-1}, to:"ja2"}
+ ]};
+
+N.ja2 = { act:"The Tent of Jael", scene:"tent", where:"Kedesh · the oaks of Zaanaim", when:"Dusk",
+ text:["He drinks, and goes, and the hills take him.",
+       "Barak arrives an hour later with forty men and dust to the knee and asks you, very quietly, which way. You tell him. He looks at you for a long moment.",
+       "'He will raise another nine hundred,' Barak says. 'And it will be your sons in the river next time.'",
+       "He is not wrong. It takes eleven years and he is not wrong."],
+ verse:"Judges 4:16 — and there was not a man left.",
+ fx:{mercy:1},
+ choices:[{t:"Watch him go.", to:"gi1"}]};
+
+N.ja3 = { act:"The Tent of Jael", scene:"tent", where:"Inside the tent", when:"The light going",
+ text:["He drinks the milk like a man who has forgotten how. Then he lies down and tells you to stand in the door, and if any man comes and asks whether there is a man here, say no.",
+       "He is asleep in under a minute. He sleeps like something that has been awake for three days.",
+       "The tent pegs are in a leather roll by your knee. There is a hammer in your other hand because you were pegging the north side when he came. You did not pick either of them up for this.",
+       "Outside, somewhere down the valley, Barak's men are calling to each other."],
+ verse:"Judges 4:21 — then Jael took a nail of the tent, and took an hammer in her hand.",
+ choices:[
+  {t:"Put the hammer down. Walk out. Tell Barak where he is.", fx:{mercy:2,wisdom:1}, to:"ja4"},
+  {t:"Kneel beside him with the peg.", fx:{courage:3,faith:1,mercy:-2}, mark:"The Tent Peg", to:"ja5"},
+  {t:"Sit in the doorway and let him sleep, and say nothing to anyone.", fx:{mercy:3,courage:-2}, to:"ja2"}
+ ]};
+
+N.ja_fight = { battle:"sisera", scene:"tent",
+ intro:["He looks at the tent. He looks at the pegs. He works it out.",
+        "'Heber's wife,' he says. 'Of course.'",
+        "He has no sword. He is a captain of nine hundred chariots and he does not need one."],
+ win:"ja5", lose:"d_tent", flee:"ja2" };
+
+N.ja4 = { act:"The Tent of Jael", scene:"tent", where:"Outside the tent", when:"First stars",
+ text:["Barak comes up the slope at a run and goes in past you with his sword already out, and it is over before he gets all the way through the door.",
+       "Afterwards he stands in the dark wiping his hands on the grass and will not look at you.",
+       "'Deborah said the Lord would sell him into the hand of a woman,' he says. 'I thought she meant her.'"],
+ verse:"Judges 4:9 — the Lord shall sell Sisera into the hand of a woman.",
+ fx:{wisdom:2},
+ choices:[{t:"Take the tent down in the morning.", to:"gi1"}]};
+
+N.ja5 = { act:"The Tent of Jael", scene:"tent", where:"Inside the tent", when:"Dark",
+ text:["It takes one blow and it is not clean and you are not sorry, and both of those things stay with you.",
+       "Barak finds you sitting in the doorway with your hands on your knees. You get up and lift the flap and show him, and he goes grey.",
+       "They sing about it for four hundred years. 'Blessed above women shall Jael be.' They sing it at feasts. You never once hear it without hearing the other sound underneath."],
+ verse:"Judges 5:24 — blessed above women shall Jael the wife of Heber be.",
+ fx:{courage:2,faith:1}, mark:"The Tent Peg", give:["sword"],
+ choices:[{t:"Walk out into the air.", to:"gi1"}]};
+
+/* ---------- SAMSON AND DELILAH ---------- */
+N.sa1 = { act:"The House in Sorek", scene:"sorek", newact:true, where:"The valley of Sorek", when:"Three nights running",
+ text:["You cook in a house in the valley of Sorek, and the woman of the house is called Delilah, and the man who comes to her is the strongest thing anyone in Philistia has ever seen.",
+       "He killed a thousand men at Lehi with a jawbone off the ground. He carried the gates of Gaza — posts, bar and all — to the top of a hill because he felt like it.",
+       "Last week five lords of the Philistines sat in this kitchen and counted out eleven hundred pieces of silver apiece onto that table, and told her what they wanted, and she did not say no.",
+       "She has asked him three times now where his strength lies. Three times he has lied to her, laughing. Three times there were men behind the curtain and three times he snapped what bound him like thread.",
+       "Tonight she is crying, and she is good at it, and he is starting to look tired."],
+ verse:"Judges 16:16 — she pressed him daily with her words, so that his soul was vexed unto death.",
+ choices:[
+  {t:"Get him out of the house tonight. Any excuse. Spill something, start a fire.", fx:{mercy:3,courage:2}, to:"sa2"},
+  {t:"Tell him plainly: there are men behind that curtain and she is paid.", fx:{courage:3,faith:1,mercy:1}, to:"sa3"},
+  {t:"Serve the wine and keep your eyes down. It is not your house.", fx:{faith:-2,mercy:-2}, mark:"Left Them Bound", to:"sa4"},
+  {t:"Stand where the lords put you and watch the curtain.", fx:{faith:-3,mercy:-3}, mark:"Informer", to:"sa4"}
+ ]};
+
+N.sa2 = { act:"The House in Sorek", scene:"sorek", where:"The kitchen", when:"Late",
+ text:["You put the whole pot into the fire and the kitchen goes up in smoke and everybody is out in the yard coughing for a quarter of an hour.",
+       "It buys him one night. He goes back in. Of course he goes back in.",
+       "Four nights later you are drawing water when the noise starts in the house, and it is not a fight, it is worse than a fight, it is a lot of men being very quick about something.",
+       "By the time you get to the door they have him on the floor with his head in her lap and his hair on the tiles all round him, and he is saying I will go out as at other times, and he does not know yet. That is the part. He does not know yet that the Lord is departed from him."],
+ verse:"Judges 16:20 — and he wist not that the Lord was departed from him.",
+ fx:{mercy:1},
+ choices:[{t:"Follow them out.", to:"sa5"}]};
+
+N.sa3 = { act:"The House in Sorek", scene:"sorek", where:"The doorway", when:"Late",
+ text:["You say it fast, in the doorway, with the wine still in your hands. Men. Behind the curtain. Eleven hundred pieces of silver, five times over, on that table, last week.",
+       "He looks at the curtain. He looks at her. And then he does the thing you will think about for the rest of your life.",
+       "He smiles, a bit, and shakes his head, and says: 'I know.'",
+       "And he stays."],
+ verse:"Judges 16:17 — he told her all his heart.",
+ fx:{faith:2,courage:2,mercy:2}, mark:"Warned the Strong Man",
+ choices:[{t:"Set the cup down and go.", to:"sa5"},
+          {t:"Stay in the room. Make them do it in front of a witness.", fx:{courage:2}, to:"sa_fight"}]};
+
+N.sa_fight = { battle:"philistine", scene:"sorek",
+ intro:["The curtain comes down and there are more of them than you thought and one of them has already seen your face.",
+        "'The cook,' he says, disgusted. 'Deal with the cook.'"],
+ win:"sa5", lose:"d_sorek", flee:"sa5" };
+
+N.sa4 = { act:"The House in Sorek", scene:"sorek", where:"Behind the curtain", when:"The small hours",
+ text:["It takes them under a minute once he is asleep.",
+       "He comes up off the floor shaking himself like a man coming out of a river, and it is not there, and you watch it arrive in his face.",
+       "They put out his eyes in that room. You are standing close enough to be splashed."],
+ verse:"Judges 16:21 — the Philistines took him, and put out his eyes.",
+ fx:{mercy:-2},
+ choices:[{t:"Go with the crowd to Gaza.", to:"sa5"}]};
+
+N.sa5 = { act:"The House in Sorek", scene:"dagon", where:"The temple of Dagon, Gaza", when:"The feast day",
+ text:["Three thousand on the roof and the whole floor packed and the lords of the Philistines drunk at the high table, and they send to the prison house for him to make sport.",
+       "They bring him out blind on a boy's shoulder, turning a mill-grindstone's worth of muscle gone to meat, and the room makes a noise you would not want made about you.",
+       "He asks the boy to put his hands on the two middle pillars that the house stands on. The boy does it, because he is a boy, and because nobody is watching a blind man's hands.",
+       "You are near the east door. You are one of maybe four people in the building who are looking at the pillars instead of at his face."],
+ verse:"Judges 16:28 — O Lord God, remember me, I pray thee, only this once.",
+ choices:[
+  {t:"Get out. Door's behind you. Go now and do not shout.", fx:{wisdom:3}, to:"sa6"},
+  {t:"Shout a warning to the room and try to clear the east door.", fx:{mercy:3,courage:2}, to:"sa6b"},
+  {t:"Stay. You want to see whether he can still do it.", fx:{courage:1,wisdom:-3}, to:"sa_die"}
+ ]};
+
+N.sa6 = { act:"The House in Sorek", scene:"dagon", where:"The street outside", when:"Moments later",
+ text:["You are twenty paces up the street when the sound comes — not a crash, a swallow, like a throat closing.",
+       "The temple of Dagon goes down flat into its own footprint and the dust comes up the street past you and keeps going.",
+       "So the dead which he slew at his death were more than they which he slew in his life. You are standing in the street counting, and you keep arriving at the wrong number, because you are counting the roof."],
+ verse:"Judges 16:30 — let me die with the Philistines.",
+ fx:{wisdom:2},
+ choices:[{t:"Walk out of Gaza.", to:"e1"}]};
+
+N.sa6b = { act:"The House in Sorek", scene:"dagon", where:"The east door", when:"Moments later",
+ text:["You get maybe nine people out. Two of them are children and one of them bites you.",
+       "Then the pillars go and the roof comes down and the doorway you are standing in holds, because doorways sometimes do.",
+       "You dig for two days. You find four more alive. Nobody ever thanks you, because nobody who was in that room is in any condition to, and because you are a Hebrew and this was a temple of Dagon, and the whole thing is complicated in a way nobody wants to discuss."],
+ verse:"Judges 16:30 — and the house fell upon the lords, and upon all the people.",
+ fx:{mercy:3,faith:2}, mark:"Cleared the East Door",
+ choices:[{t:"Walk out of Gaza.", to:"e1"}]};
+
+N.sa_die = { end:"death", title:"Under the House of Dagon", scene:"dagon",
+ text:["You want to see it, and you do see it. You see both pillars move at once, which nobody has ever seen, and you have about a second and a half to enjoy having been right.",
+       "Three thousand people on the roof come down into the hall and you are in the hall. They do not find you. They do not find most people. Gaza stops digging on the fourth day."],
+ verse:"Judges 16:30 — so the dead which he slew at his death were more than they which he slew in his life."};
+
+/* ---------- THE WOMAN AT ENDOR ---------- */
+N.en1 = { act:"The Woman at Endor", scene:"endor", newact:true, where:"Endor, behind the Philistine lines", when:"The night before Gilboa",
+ text:["The king banned this. He put every medium and wizard out of the land himself, years ago, with soldiers and fire. You remember it. Everyone remembers it.",
+       "So it is a strange thing to be standing in a back room in Endor at midnight holding the door for him while he takes his crown off and puts on somebody else's coat.",
+       "He has asked God and God has not answered — not by dreams, not by Urim, not by prophets. Samuel is dead. The Philistines are drawn up at Shunem in numbers nobody wants to say out loud. Gilboa is tomorrow.",
+       "'Bring me up Samuel,' the king says to the woman.",
+       "She is looking at you, not at him. She knows this is a trap. She is deciding whether to run."],
+ verse:"1 Samuel 28:7 — seek me a woman that hath a familiar spirit.",
+ choices:[
+  {t:"Take the king by the arm and get him out of this house.", fx:{faith:3,courage:3}, to:"en2"},
+  {t:"Tell the woman who he is, so she can refuse him honestly.", fx:{mercy:2,wisdom:2}, to:"en3"},
+  {t:"Hold the door and say nothing. He is the king.", fx:{faith:-2}, to:"en3"},
+  {t:"Stand where you can see the circle she is drawing.", fx:{wisdom:1,faith:-3}, mark:"Looked in the Circle", to:"en3"}
+ ]};
+
+N.en2 = { act:"The Woman at Endor", scene:"endor", where:"The road back", when:"After midnight",
+ text:["He comes, which surprises you. A king in a borrowed coat lets you walk him out into a field and sit him on a stone.",
+       "He talks for an hour. Not like a king. He says he knows what he did at Amalek. He says he can still hear Samuel saying rebellion is as the sin of witchcraft, and that he has just spent an evening trying to prove it.",
+       "'I am afraid,' he says, which no one has heard Saul say in twenty years. 'Tell me you are not afraid.'",
+       "You cannot tell him that."],
+ verse:"1 Samuel 28:5 — he was afraid, and his heart greatly trembled.",
+ fx:{faith:2,mercy:2}, mark:"Walked the King Out",
+ choices:[{t:"Sit with him until it gets light.", to:"en4"}]};
+
+N.en3 = { act:"The Woman at Endor", scene:"endor", where:"The back room", when:"Midnight",
+ text:["She starts, and then she screams — a real scream, not a performance, and she rounds on the king with her hand out: 'Why hast thou deceived me? For thou art Saul.'",
+       "Because something has come up, and it is not what she usually gets, and she knows the difference.",
+       "An old man in a mantle. The king goes face-down on the floor.",
+       "And the old man says: tomorrow shalt thou and thy sons be with me. The Lord shall deliver Israel into the hand of the Philistines.",
+       "Saul falls full length on the ground and stays there. There is no strength in him; he has eaten nothing all day and all night."],
+ verse:"1 Samuel 28:19 — tomorrow shalt thou and thy sons be with me.",
+ fx:{faith:-2,wisdom:2},
+ choices:[
+  {t:"Help the woman get food into him. He has to walk back somehow.", fx:{mercy:3}, to:"en4"},
+  {t:"Get out of that room and be sick in the yard.", fx:{wisdom:1}, to:"en4"},
+  {t:"Ask the thing in the mantle whether it has anything to say to you.", fx:{faith:-4,wisdom:1}, mark:"Looked in the Circle", to:"en_bad"}
+ ]};
+
+N.en_bad = { act:"The Woman at Endor", scene:"endor", where:"The back room", when:"Midnight",
+ text:["It turns its head.",
+       "You do not remember the walk back. You wake three days later in a cart somewhere near Jezreel with your jaw aching from being clenched, and the carter tells you that you talked the whole way and that he would rather you had not."],
+ verse:"Leviticus 19:31 — regard not them that have familiar spirits.",
+ fx:{faith:-3,wisdom:1},
+ choices:[{t:"Sit up.", to:"en4"}]};
+
+N.en4 = { act:"The Woman at Endor", scene:"gilboa", where:"Mount Gilboa", when:"The day after",
+ text:["The archers find Saul on the mountain in the afternoon and wound him badly, and he asks his armourbearer to finish it, and the man will not, and so the king falls on his own sword in front of him. And then the armourbearer does the same, and dies with him.",
+       "Jonathan is already dead further down the slope. So are two more of his brothers.",
+       "A young man comes running south with the crown and the bracelet to tell David, expecting payment. David has him executed before noon, and then tears his clothes, and then sits down and writes a song about how the beauty of Israel is slain upon thy high places, and how Saul and Jonathan were lovely and pleasant in their lives, and in their death they were not divided."],
+ verse:"2 Samuel 1:19 — how are the mighty fallen!",
+ fx:{wisdom:2},
+ choices:[{t:"Go south with everybody else.", to:"ba1"}]};
+
+/* ---------- THE ROOF OF THE KING ---------- */
+N.ba1 = { act:"The Roof of the King", scene:"palace", newact:true, where:"Jerusalem · the palace roof", when:"Eveningtide, the year the kings go out",
+ text:["You carry messages for the king now. It is a good post. He is a good king, mostly, and he writes songs, and he has not forgotten the brook at Elah.",
+       "It is spring. The army is at Rabbah with Joab, where the king should be.",
+       "He walks on the roof in the evening because he cannot sleep, and the roof of a king's house in Jerusalem looks down on a great many other roofs.",
+       "He has stopped walking. He has been standing at the parapet for a while now, looking down into a courtyard, and he has just asked you — without turning round — to go and find out who she is."],
+ verse:"2 Samuel 11:2 — and from the roof he saw a woman washing herself.",
+ choices:[
+  {t:"Go. Find out. He is the king and it is a question.", fx:{faith:-2}, to:"ba2"},
+  {t:"Tell him who she is right now: Bathsheba, wife of Uriah the Hittite, one of his own thirty.", fx:{courage:3,wisdom:2,faith:1}, mark:"Named the Husband", to:"ba2b"},
+  {t:"Say nothing and do not move.", fx:{courage:1,faith:-1}, to:"ba2"}
+ ]};
+
+N.ba2 = { act:"The Roof of the King", scene:"palace", where:"The palace", when:"Weeks later",
+ text:["You bring back the name and the name does not stop anything.",
+       "What happens after that happens quickly and quietly and with a great many people like you carrying messages through corridors at odd hours.",
+       "Then a message comes the other way, from her, and it is three words long, and the king reads it twice.",
+       "He sends to Joab: send me Uriah the Hittite."],
+ verse:"2 Samuel 11:5 — and she sent and told David, and said, I am with child.",
+ choices:[{t:"Fetch Uriah.", to:"ba3"}]};
+
+N.ba2b = { act:"The Roof of the King", scene:"palace", where:"The roof", when:"Eveningtide",
+ text:["He turns round when you say Uriah's name. You watch him hear it. You watch him know.",
+       "'One of the thirty,' he says.",
+       "'One of the thirty, my lord.'",
+       "He looks at the parapet for a while. Then he says thank you, and goes down, and you think for one entire night that you have fixed something.",
+       "In the morning he sends messengers anyway."],
+ verse:"2 Samuel 11:3 — is not this Bathsheba, the wife of Uriah the Hittite?",
+ fx:{faith:1},
+ choices:[{t:"Fetch Uriah.", to:"ba3"}]};
+
+N.ba3 = { act:"The Roof of the King", scene:"palace", where:"The king's hall", when:"Night",
+ text:["Uriah comes up from the siege dusty and pleased to be asked. The king gives him wine and asks after Joab, and the war, and sends him home to his own house with a gift from the king's table.",
+       "Uriah sleeps in the doorway of the king's house with the servants. All night.",
+       "In the morning the king asks him why. And Uriah says: the ark, and Israel, and Judah, abide in tents, and my lord Joab and the servants of my lord are encamped in the open fields; shall I then go into mine house, to eat and to drink, and to lie with my wife? As thou livest, I will not do this thing.",
+       "He says it standing at attention. He has no idea. He is the most honourable man in the room and he has no idea.",
+       "The next night the king gets him properly drunk and it still does not work.",
+       "Then the king writes a letter, and seals it, and gives it to Uriah to carry to Joab himself."],
+ verse:"2 Samuel 11:11 — shall I then go into mine house? as thou livest, I will not do this thing.",
+ choices:[
+  {t:"Say nothing. Hand him the letter. It is sealed and it is not yours.", fx:{faith:-4,mercy:-3}, mark:"Carried the Letter", to:"ba4"},
+  {t:"Tell Uriah not to carry that letter. Tell him to run.", fx:{courage:4,mercy:4,faith:2}, mark:"Warned Uriah", to:"ba3b"},
+  {t:"Break the seal yourself and read it.", fx:{wisdom:2,courage:2}, to:"ba3c"}
+ ]};
+
+N.ba3b = { act:"The Roof of the King", scene:"palace", where:"The courtyard", when:"Before dawn",
+ text:["You catch him at the gate. You do not say what is in it, because you do not know, you only know the shape of what has been happening in these corridors for three weeks.",
+       "Uriah listens to you politely all the way through. Then he puts his hand on your shoulder.",
+       "'The king gave me this,' he says, 'to carry to my commander. If you knew me at all you would not have asked.'",
+       "And he goes. Of course he goes. Being the kind of man he is, is the entire reason he is dead."],
+ verse:"2 Samuel 11:14 — David wrote a letter to Joab, and sent it by the hand of Uriah.",
+ fx:{mercy:2,faith:1},
+ choices:[{t:"Watch the gate close.", to:"ba4"}]};
+
+N.ba3c = { act:"The Roof of the King", scene:"palace", where:"A side room", when:"Before dawn",
+ text:["You break it and read it and you wish very much that you had not.",
+       "Set ye Uriah in the forefront of the hottest battle, and retire ye from him, that he may be smitten, and die.",
+       "The man carrying it is standing in the yard outside, waiting for you politely, holding his helmet."],
+ verse:"2 Samuel 11:15 — set ye Uriah in the forefront of the hottest battle.",
+ fx:{wisdom:2},
+ choices:[
+  {t:"Burn it. Tell the king it was lost on the road.", fx:{courage:4,mercy:4,faith:2}, mark:"Burned the Letter", to:"ba3d"},
+  {t:"Reseal it and hand it over. You have a family.", fx:{faith:-4,mercy:-4}, mark:"Carried the Letter", to:"ba4"}
+ ]};
+
+N.ba3d = { act:"The Roof of the King", scene:"palace", where:"The king's hall", when:"Nine days later",
+ text:["You burn it in the kitchen fire and send Uriah back with a verbal greeting to Joab, and for nine days you are the bravest man in Israel and nobody knows it.",
+       "On the tenth day the king asks, mildly, whether Joab had any reply to his letter.",
+       "There is a long pause in that room. You can hear a fly.",
+       "'There was no letter, my lord,' you say. 'It was lost.'",
+       "He looks at you. He knows exactly what you have done and he knows you know, and for about four seconds it could go either way.",
+       "Then he says: 'Then it was lost,' and turns away, and you keep your post, and he writes another letter in the spring."],
+ verse:"Psalm 51:3 — for I acknowledge my transgressions: and my sin is ever before me.",
+ fx:{courage:3,faith:3,mercy:2}, mark:"Burned the Letter",
+ choices:[{t:"Keep your post.", to:"ba5"}]};
+
+N.ba4 = { act:"The Roof of the King", scene:"palace", where:"Rabbah · then Jerusalem", when:"Eleven days",
+ text:["Joab reads the letter and does what it says, and because he is Joab he does it clumsily enough to lose six other men with him, so that the messenger will have something else to talk about.",
+       "The messenger is coached on the way: if the king gets angry about the casualties, mention Uriah last, and the king will stop being angry. It works exactly as predicted.",
+       "She mourns for her husband. When the mourning is past, the king sends and fetches her to his house.",
+       "But the thing that David had done displeased the Lord."],
+ verse:"2 Samuel 11:27 — but the thing that David had done displeased the Lord.",
+ fx:{faith:-2},
+ choices:[{t:"Wait for the prophet.", to:"ba5"}]};
+
+N.ba5 = { act:"The Roof of the King", scene:"palace", where:"The king's hall", when:"A year on",
+ text:["Nathan comes with a story about a rich man with many flocks and a poor man with one ewe lamb that grew up with his children and ate of his own meat and lay in his bosom and was unto him as a daughter. And a traveller came to the rich man, and the rich man would not take of his own flock, but took the poor man's lamb and dressed it.",
+       "The king goes up out of his chair. He is genuinely furious. He says the man shall surely die, and shall restore fourfold.",
+       "And Nathan says, without raising his voice: thou art the man.",
+       "You are standing by the door. Nobody in that room is breathing."],
+ verse:"2 Samuel 12:7 — and Nathan said to David, Thou art the man.",
+ choices:[
+  {t:"Stay where you are and let him be judged in front of witnesses.", fx:{faith:2,wisdom:1}, to:"ba6"},
+  {t:"Move to the door in case the king calls for the guard.", fx:{wisdom:2,courage:1}, to:"ba6"},
+  {t:"Leave. You have carried enough of this.", fx:{courage:-1}, to:"ba6"}
+ ]};
+
+N.ba6 = { act:"The Roof of the King", scene:"palace", where:"The king's hall", when:"A year on",
+ text:["He does not call the guard. He puts his face in his hands and says: I have sinned against the Lord.",
+       "The sword never does leave his house. Not for the rest of his life. There is a dead child within the week, and a worse year after that, and in time a son of his own comes down out of the hills with an army to take the throne and gets his hair caught in an oak tree, and Joab puts three darts through his heart while he hangs there.",
+       "And the king sits in the chamber over the gate and says, over and over, O my son Absalom, my son, my son Absalom! would God I had died for thee.",
+       "You are the one who has to go up and tell him to stop, because the army is coming home ashamed, as though they had fled in battle."],
+ verse:"2 Samuel 18:33 — would God I had died for thee, O Absalom, my son, my son!",
+ fx:{wisdom:3},
+ choices:[{t:"Go up the stair.", to:"nv1"}]};
+
+/* ---------- NABOTH'S VINEYARD ---------- */
+N.nv1 = { act:"Naboth's Vineyard", scene:"vineyard", newact:true, where:"Jezreel", when:"The reign of Ahab",
+ text:["Naboth has four acres of old vine beside the palace at Jezreel. His father had it, and his father's father, as far back as the division of the land under Joshua.",
+       "The king wants it for a herb garden. He offered money, and a better vineyard elsewhere, and Naboth said: the Lord forbid it me, that I should give the inheritance of my fathers unto thee.",
+       "So the king went home and lay down on his bed with his face to the wall and would not eat, which is a thing he does.",
+       "And now the queen has written letters in the king's name and sealed them with the king's seal and sent them to the elders of your city. You have read yours. You are one of the elders.",
+       "It wants a fast proclaimed, Naboth set on high among the people, and two men — sons of Belial, it says, right there in the letter, in her handwriting — to sit before him and bear witness that he blasphemed God and the king. Then carry him out and stone him.",
+       "They are short one witness."],
+ verse:"1 Kings 21:10 — set two men, sons of Belial, before him, to bear witness against him.",
+ choices:[
+  {t:"Refuse. Out loud. In front of the other elders.", fx:{courage:4,faith:3,mercy:2}, mark:"Refused the Letter", to:"nv2"},
+  {t:"Sit as the second witness. The letter has the king's seal on it.", fx:{faith:-6,mercy:-5}, mark:"Bore False Witness", to:"nv3"},
+  {t:"Go and warn Naboth tonight. Tell him to take his sons and run.", fx:{mercy:4,courage:3,wisdom:1}, mark:"Warned Naboth", to:"nv_warn"},
+  {t:"Be ill. Send your regrets. Let the others sort it out.", fx:{faith:-2,courage:-2}, to:"nv3"}
+ ]};
+
+N.nv2 = { act:"Naboth's Vineyard", scene:"vineyard", where:"The elders' room", when:"Night",
+ text:["You say no, and you say why, and the room goes extremely quiet.",
+       "The letter is read out again, slowly, with the seal held up, in case you missed whose seal it is.",
+       "Then a man you have known for thirty years says: 'He has a wife, hasn't he. And the boys.' Not as a threat. As a reminder of the arithmetic.",
+       "They find their second witness before midnight. It is never difficult."],
+ verse:"1 Kings 21:13 — and there came in two men, children of Belial.",
+ fx:{faith:2},
+ choices:[{t:"Walk home past his gate.", to:"nv3"}]};
+
+N.nv_warn = { check:function(s){ return s.wisdom >= 10 || s.courage >= 20; }, pass:"nv_warn2", fail:"nv_warn3" };
+
+N.nv_warn2 = { act:"Naboth's Vineyard", scene:"vineyard", where:"Naboth's gate", when:"Before dawn",
+ text:["You go over the back wall of his yard at the third hour of the night and wake him with your hand over his mouth, and you talk fast.",
+       "He does not argue. That is the thing about Naboth — he knew what he was refusing when he refused it. He has had the bag packed for a week.",
+       "They are six miles toward the Jordan by the time the fast is proclaimed. The elders stone an empty house and send the queen a carefully worded letter.",
+       "The vineyard is taken anyway. But Naboth's sons are alive in Gilead, and in nine years one of them rides back with Jehu."],
+ verse:"Proverbs 24:11 — if thou forbear to deliver them that are drawn unto death.",
+ fx:{mercy:4,faith:3,courage:2}, mark:"Warned Naboth",
+ choices:[{t:"Go back over the wall.", to:"nv4"}]};
+
+N.nv_warn3 = { act:"Naboth's Vineyard", scene:"vineyard", where:"Naboth's gate", when:"Before dawn",
+ text:["There is a man sitting on the wall of Naboth's yard in the dark, and he is not one of Naboth's.",
+       "'Elder,' he says, pleasantly. 'Lost?'",
+       "You go home. Naboth is stoned the next afternoon with his sons, outside the city, and the dogs are at the blood before anyone thinks to move the body."],
+ verse:"1 Kings 21:13 — and they carried him forth out of the city, and stoned him.",
+ fx:{mercy:1,faith:-1},
+ choices:[{t:"Go home.", to:"nv4"}]};
+
+N.nv3 = { act:"Naboth's Vineyard", scene:"vineyard", where:"Outside the city", when:"Afternoon",
+ text:["They set him on high among the people, which is the detail that stays with you — they put him up where everyone can see him, in the place of honour, before they do it.",
+       "The two witnesses say their piece. It takes under a minute. He does not get to answer.",
+       "The dogs are at the blood before anyone thinks to move him. The king comes down the same evening to walk in his new herb garden."],
+ verse:"1 Kings 21:16 — Ahab rose up to go down to the vineyard of Naboth, to take possession of it.",
+ fx:{faith:-2},
+ choices:[{t:"Stand in the crowd.", to:"nv4"}]};
+
+N.nv4 = { act:"Naboth's Vineyard", scene:"vineyard", where:"The vineyard", when:"The same evening",
+ text:["Elijah is standing between the vines when the king comes through the gate.",
+       "'Hast thou found me, O mine enemy?' the king says.",
+       "'I have found thee: because thou hast sold thyself to work evil in the sight of the Lord. In the place where dogs licked the blood of Naboth shall dogs lick thy blood, even thine.'",
+       "And the king goes home and tears his clothes and puts on sackcloth and fasts and lies in sackcloth and goes softly, and the word comes to Elijah: seest thou how Ahab humbleth himself before me? Because he humbleth himself, I will not bring the evil in his days.",
+       "Which is either the most merciful sentence you have ever heard, or the most frightening, and you spend years failing to decide."],
+ verse:"1 Kings 21:19 — in the place where dogs licked the blood of Naboth shall dogs lick thy blood.",
+ fx:{faith:2,wisdom:2},
+ choices:[{t:"Go up to Carmel.", to:"c1"}]};
+
+/* ---------- HEROD'S BANQUET ---------- */
+N.he1 = { act:"The Head on the Charger", scene:"banquet", newact:true, where:"Machaerus · the fortress above the Dead Sea", when:"The king's birthday",
+ text:["You guard a cistern. There is a prophet in it.",
+       "He has been down there the better part of a year for saying, in public, repeatedly, that it is not lawful for the king to have his brother's wife. The king half agrees with him. That is the strange part. Herod comes down to the grating some nights and argues with him for an hour and goes away looking worse.",
+       "Tonight the whole fortress is drunk. It is the king's birthday and the lords and the high captains and the chief estates of Galilee are all up there.",
+       "An hour ago the girl danced, and pleased him, and he swore to her before the entire table — twice, loudly, like a man in a story — whatsoever thou shalt ask of me, I will give it thee, unto the half of my kingdom.",
+       "She went out to ask her mother what to ask for. Her mother is Herodias. You can already hear the answer coming down the stairs."],
+ verse:"Mark 6:23 — whatsoever thou shalt ask of me, I will give it thee, unto the half of my kingdom.",
+ choices:[
+  {t:"Get the grating open and get him out while they are still arguing upstairs.", fx:{courage:4,mercy:4,faith:2}, mark:"Opened the Grating", to:"he2"},
+  {t:"Go up and remind the king, in front of the table, what he said about this man.", fx:{courage:4,faith:3,wisdom:-1}, to:"he3"},
+  {t:"Stay at your post. You are a soldier and this is a lawful order.", fx:{faith:-4,mercy:-4}, mark:"Stood the Post", to:"he4"},
+  {t:"Go down to the grating and tell him what is coming.", fx:{mercy:3,faith:2}, to:"he_tell"}
+ ]};
+
+N.he2 = { battle:"guardsman", scene:"banquet",
+ intro:["You have the bar off and the rope down when the other watch comes round the corner of the cistern house.",
+        "He looks at the rope. He looks at you.",
+        "'Don't,' he says, already drawing. 'Don't make me.'"],
+ win:"he2b", lose:"d_banquet", flee:"he4" };
+
+N.he2b = { act:"The Head on the Charger", scene:"banquet", where:"The water gate", when:"The small hours",
+ text:["The prophet comes up the rope hand over hand like a man half his age, and stands in the yard looking at the stars for a moment, and then looks at you.",
+       "'They will take this out of you,' he says.",
+       "'Probably.'",
+       "'Then go out the water gate with me and do not come back.'",
+       "And you do. And you are with him in the wilderness four months, eating the sort of thing he eats, and you are standing in the Jordan shallows the day a man comes down from Galilee to be baptized and the sky opens like a door."],
+ verse:"Matthew 3:17 — this is my beloved Son, in whom I am well pleased.",
+ fx:{faith:5,courage:2,mercy:2}, mark:"Opened the Grating", give:["anoint"],
+ choices:[{t:"Stay in the water.", to:"g1"}]};
+
+N.he_tell = { act:"The Head on the Charger", scene:"banquet", where:"The cistern", when:"The small hours",
+ text:["You put your face to the grating and tell him, and he is quiet for a moment, and then he laughs — one syllable, not bitter.",
+       "'He must increase,' he says, 'but I must decrease.'",
+       "Then he asks you, as a favour, to make sure that his disciples are told, and that they are allowed to come and take up the body. He says it like a man arranging a cart."],
+ verse:"John 3:30 — he must increase, but I must decrease.",
+ fx:{faith:3,mercy:2}, mark:"Carried the Word",
+ choices:[
+  {t:"Promise him, and keep it.", fx:{mercy:3,faith:2}, to:"he4"},
+  {t:"Change your mind. Get the grating open.", fx:{courage:3}, to:"he2"}
+ ]};
+
+N.he3 = { act:"The Head on the Charger", scene:"banquet", where:"The high table", when:"Late",
+ text:["You come up the stair in your mail with the whole room turning to look, and you say it: my lord, you have called this man a just man and a holy, and you have heard him gladly, and the oath was sworn to a dancer.",
+       "Herod looks at you. For about two seconds there is something in his face that could save a life.",
+       "Then he looks down the table at his lords and his high captains and his chief estates of Galilee, all of them watching a king decide whether his word means anything, and the something goes out of his face.",
+       "'For the oath's sake,' he says, 'and for them which sat with him, he would not reject her.'",
+       "He will not look at you again. He sends an executioner instead."],
+ verse:"Mark 6:26 — and the king was exceeding sorry; yet for his oath's sake.",
+ fx:{courage:3,faith:2}, mark:"Spoke at the Table",
+ choices:[{t:"Go back down to the yard.", to:"he4"}]};
+
+N.he4 = { act:"The Head on the Charger", scene:"banquet", where:"The cistern yard", when:"Before light",
+ text:["It is done at the bottom of the stair, out of sight of the table, by a man who does this for a living and does not enjoy it and is quick.",
+       "They carry it up on a serving dish. A girl takes it to her mother. You hear the noise the room makes — not horror. Applause, mostly. It is very late and everyone is very drunk.",
+       "His disciples come at dawn in a cart. They do not speak to anyone. They take up the body and bury it, and then they go and tell Jesus.",
+       "And when he hears it, he goes out by himself into a desert place, and will not see anybody for a while."],
+ verse:"Matthew 14:12 — and they went and told Jesus.",
+ fx:{wisdom:2},
+ choices:[{t:"Hand in your mail.", to:"g1"}]};
+
+/* ---------- new endings ---------- */
+N.d_tent = { end:"death", title:"In the Doorway of the Tent", scene:"tent",
+ text:["He has no sword and he is still a captain of nine hundred chariots, and the fight lasts about as long as you would expect.",
+       "Barak finds you in the doorway an hour later. Sisera is six miles north by then, and he raises another army, and it takes eleven more years and a great many other people's sons."],
+ verse:"Judges 4:2 — and he had nine hundred chariots of iron."};
+
+N.d_sorek = { end:"death", title:"Behind the Curtain in Sorek", scene:"sorek",
+ text:["They deal with the cook. It takes two of them and it is not remarked on afterwards by anybody.",
+       "In the next room a strong man is telling a woman the truth about his hair, and in three weeks he will pull a temple down on three thousand people, and none of that is any use to you at all."],
+ verse:"Judges 16:19 — and his strength went from him."};
+
+N.d_banquet = { end:"death", title:"At the Mouth of the Cistern", scene:"banquet",
+ text:["He did not want to. He says so twice while it is happening, which does not help either of you.",
+       "They find the rope down and the bar off and a dead guard in the yard, and the prophet still in the hole, and they do the thing with the charger anyway two hours later.",
+       "Your name goes in the fortress book as killed in the course of duty, which is true in a way nobody in that building would recognise."],
+ verse:"Mark 6:27 — and the king sent an executioner."};
 
 /* ================= endings ================= */
 N.d_fire = { end:"death", title:"Consumed in the Plain", scene:"sodom",
@@ -1415,15 +1997,28 @@ N.e_city = { end:"crown", title:"The City Whose Builder Is God", scene:"gate",
  verse:"Revelation 21:25 — and the gates of it shall not be shut at all by day."};
 
 var ALL_ENDINGS = ["e_city","e_crown","e_fire","e_dark","e_lake","p_brick","p_mamertine",
+  "d_tent","d_sorek","sa_die","d_banquet",
   "d_jericho_jail","d_fire","d_mob","d_salt","d_firstborn","d_lash","d_chariot","d_sword",
   "d_wander","d_wall","d_stoned","d_elah","d_road","d_midian","d_carmel","d_lions","d_tombs","d_arena"];
 
 /* ================= sound ================= */
 var ACT_THEME = {
-  "Act I":[57,60,62,63], "Act II":[55,62,60,67], "Act III":[53,60,62,65],
-  "Act IV":[52,59,64,67], "Act V":[50,57,62,65], "Act VI":[57,64,65,67],
-  "Act VII":[52,59,63,64], "Act VIII":[57,64,65,72], "Act IX":[48,55,60,62],
-  "Act X":[48,55,60,67]
+  "The City of the Plain":[57,60,62,63],
+  "The House of Bondage":[55,62,60,67],
+  "The Walls of Jericho":[53,60,62,65],
+  "The Tent of Jael":[50,56,58,61],
+  "The Three Hundred":[50,57,62,65],
+  "The House in Sorek":[49,56,59,61],
+  "The Valley of Elah":[52,59,64,67],
+  "The Woman at Endor":[46,52,55,58],
+  "The Roof of the King":[57,61,64,69],
+  "Naboth's Vineyard":[51,55,58,63],
+  "The Fire on Carmel":[57,64,65,67],
+  "The Plain of Dura":[52,59,63,64],
+  "The Head on the Charger":[47,54,57,60],
+  "The Teacher":[57,64,65,72],
+  "The Arena":[48,55,60,62],
+  "The Last Day":[48,55,60,67]
 };
 
 var Snd = (function(){
@@ -1713,6 +2308,83 @@ function marksRow(){
   return wrap;
 }
 
+
+/* ================= feedback ================= */
+var floatHost = null;
+function showFloats(list){
+  if (!list || !list.length) return;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!floatHost){
+    floatHost = el("div","floats");
+    floatHost.setAttribute("aria-live","polite");
+    document.body.appendChild(floatHost);
+  }
+  list.forEach(function(f, i){
+    var e = el("div","float " + f.cls, f.t);
+    if (reduce) e.style.animationDuration = "0.01s";
+    setTimeout(function(){
+      floatHost.appendChild(e);
+      setTimeout(function(){ if (e.parentNode) e.parentNode.removeChild(e); }, 1900);
+    }, i * 170);
+  });
+}
+function snapshotStats(){
+  return {faith:S.faith, wisdom:S.wisdom, courage:S.courage, mercy:S.mercy,
+          vigor:S.vigor, items:(S.items||[]).slice(), marks:(S.marks||[]).slice()};
+}
+function diffStats(before){
+  var out = [];
+  [["faith","FAITH"],["courage","COURAGE"],["wisdom","WISDOM"],["mercy","MERCY"]].forEach(function(p){
+    var dv = S[p[0]] - before[p[0]];
+    if (dv) out.push({t:(dv>0?"+":"") + dv + " " + p[1], cls:dv>0?"up":"down"});
+  });
+  var dvg = S.vigor - before.vigor;
+  if (dvg) out.push({t:(dvg>0?"+":"") + dvg + " VIGOR", cls:dvg>0?"up":"down"});
+  (S.items||[]).forEach(function(id){
+    if (before.items.indexOf(id) < 0 && ITEMS[id]) out.push({t:"FOUND  " + ITEMS[id].name.toUpperCase(), cls:"item"});
+  });
+  (S.marks||[]).forEach(function(m){
+    if (before.marks.indexOf(m) < 0) out.push({t:"MARK  " + m.toUpperCase(), cls:"mark"});
+  });
+  return out;
+}
+
+/* ================= act title card ================= */
+function actCard(node){
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) return;
+  var w = el("div","cardwipe");
+  var inner = el("div","inner");
+  inner.appendChild(el("div","ch","A new chapter"));
+  inner.appendChild(el("div","ct", node.act || ""));
+  if (node.where) inner.appendChild(el("div","cw", node.where));
+  w.appendChild(inner);
+  document.body.appendChild(w);
+  setTimeout(function(){ if (w.parentNode) w.parentNode.removeChild(w); }, 2150);
+}
+
+/* ================= conditions ================= */
+function conditions(){
+  var out = [];
+  var pct = S.vigor / S.maxVigor;
+  if (pct <= 0.25) out.push({t:"BLEEDING", cls:"hurt"});
+  else if (pct <= 0.55) out.push({t:"WOUNDED", cls:"hurt"});
+  if (S.faith >= 30) out.push({t:"STEADFAST", cls:"bless"});
+  else if (S.faith <= 4) out.push({t:"FALTERING", cls:"afraid"});
+  var w = weapon();
+  if (w) out.push({t:w.name.toUpperCase(), cls:"armed"});
+  var a = armor();
+  if (a) out.push({t:a.name.toUpperCase(), cls:"armed"});
+  return out;
+}
+function condRow(){
+  var list = conditions();
+  if (!list.length) return null;
+  var row = el("div","cond");
+  list.forEach(function(c){ row.appendChild(el("span","chip " + c.cls, c.t)); });
+  return row;
+}
+
 /* ================= navigation ================= */
 function go(id){
   var node = N[id];
@@ -1732,21 +2404,24 @@ function go(id){
     S.vigor = Math.min(S.maxVigor, S.vigor + diff().heal);
   }
   S.node = id;
+  if (node.newact && node.act) actCard(node);
   if (node.end) markFound(id);
   store(KEY, JSON.stringify(S));
   draw();
 }
 function choose(c){
   Snd.wake(); Snd.pick();
-  var before = S.faith;
+  var snap = snapshotStats();
   apply(S, c.fx);
   if (c.mark && S.marks.indexOf(c.mark) < 0) S.marks.push(c.mark);
   giveItems(c.give);
   go(c.to);
+  var deltas = diffStats(snap);
+  showFloats(deltas);
   var now = N[S.node];
   if (now && !now.end && !now.battle){
-    if (S.faith > before) Snd.good();
-    else if (S.faith < before) Snd.bad();
+    if (S.faith > snap.faith) Snd.good();
+    else if (S.faith < snap.faith) Snd.bad();
   }
 }
 
@@ -1990,6 +2665,8 @@ function drawBattle(){
     box.appendChild(row);
   }
   frag.appendChild(box);
+  var cr2 = condRow();
+  if (cr2) frag.appendChild(cr2);
   var kit = kitRow();
   if (kit) frag.appendChild(kit);
 
@@ -2007,8 +2684,16 @@ function drawStory(node){
   frag.appendChild(sceneWindow(node.scene));
   if (node.act){
     frag.appendChild(el("div","act", node.act));
-    if (node.act !== lastAct){ lastAct = node.act; Snd.act(node.act.split(" —")[0]); }
+    if (node.act !== lastAct){ lastAct = node.act; Snd.act(node.act); }
   }
+  if (node.where || node.when){
+    var pl = el("div","place");
+    pl.appendChild(el("span","wh", node.where || ""));
+    pl.appendChild(el("span","wn", node.when || ""));
+    frag.appendChild(pl);
+  }
+  var cr = condRow();
+  if (cr) frag.appendChild(cr);
   var prose = el("div","prose");
   (node.text||[]).forEach(function(p){ prose.appendChild(el("p",null,p)); });
   frag.appendChild(prose);
