@@ -51,7 +51,11 @@ body{
 .px{font-family:var(--font-display);line-height:1.5;letter-spacing:.02em}
 h1{margin:0;font-family:var(--font-display);font-size:clamp(17px,5.2vw,26px);color:var(--lamp);
    text-wrap:balance;line-height:1.5;text-shadow:0 0 18px rgba(224,178,74,.35)}
+.byline{margin:0;font-family:var(--font-display);font-size:9px;letter-spacing:.18em;
+  color:var(--lamp-dim);text-transform:uppercase}
 .tagline{margin:0;color:var(--parch-dim);font-size:18px;font-style:italic;text-wrap:balance}
+.credit{font-family:var(--font-display);font-size:7px;letter-spacing:.14em;
+  color:var(--lamp-dim);text-transform:uppercase}
 .act{font-family:var(--font-display);font-size:9px;color:var(--lamp-dim);letter-spacing:.14em;text-transform:uppercase}
 .prose p{margin:0 0 .85em}
 .prose p:last-child{margin-bottom:0}
@@ -144,14 +148,43 @@ button.ghost:hover{border-color:var(--lamp-dim);color:var(--lamp)}
   border-top:1px solid var(--edge);padding-top:14px;color:var(--parch-dim);font-size:15px;font-style:italic}
 .foot span:first-child{flex:1 1 220px;min-width:0}
 .footbtns{display:flex;gap:8px;flex-wrap:wrap;flex:none}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* ---- splash ---- */
+.splash{position:fixed;inset:0;z-index:50;background:var(--ink);
+  background-image:radial-gradient(ellipse 70% 50% at 50% 42%, #231746 0%, var(--ink) 72%);
+  display:flex;align-items:center;justify-content:center;
+  padding:24px 16px;opacity:1;transition:opacity .75s ease}
+.splash[data-going="1"]{opacity:0;pointer-events:none}
+.splash-inner{display:flex;flex-direction:column;align-items:center;gap:14px;
+  text-align:center;max-width:520px;width:100%}
+.splash canvas{width:128px;height:128px;image-rendering:pixelated;
+  filter:drop-shadow(0 0 22px rgba(224,178,74,.45))}
+.splash-title{margin:0;font-family:var(--font-display);
+  font-size:clamp(16px,5.6vw,30px);line-height:1.5;color:var(--lamp);
+  letter-spacing:.04em;text-wrap:balance;text-shadow:0 0 24px rgba(224,178,74,.4)}
+.splash-by{margin:0;font-family:var(--font-display);font-size:clamp(8px,2.6vw,11px);
+  letter-spacing:.2em;color:var(--parch);text-transform:uppercase}
+.splash-hint{margin:14px 0 0;font-family:var(--font-display);font-size:8px;
+  letter-spacing:.18em;color:var(--parch-dim);text-transform:uppercase;
+  animation:pulse 2.1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.95}}
+body[data-splash="1"]{overflow:hidden}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
+<div class="splash" id="splash">
+  <div class="splash-inner">
+    <canvas id="splashArt" aria-hidden="true"></canvas>
+    <h1 class="splash-title">THE NARROW WAY</h1>
+    <p class="splash-by">by Andrew Gooden</p>
+    <p class="splash-hint" id="splashHint">Tap to begin</p>
+  </div>
+</div>
+
 <div class="frame">
   <div id="app"></div>
   <div class="foot">
-    <span id="footnote">A choose-your-own-adventure through the Scriptures. Every path is survivable. Not every path is survived.</span>
+    <span id="footnote">The Narrow Way — a game by Andrew Gooden</span>
     <span class="footbtns">
       <button class="ghost" id="sound" type="button" aria-pressed="true">Sound on</button>
       <button class="ghost" id="reset" type="button" hidden>Abandon run</button>
@@ -443,6 +476,41 @@ var SCENES = {
     "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK"
   ]
 };
+
+var LAMP = [
+  "................................",
+  "................................",
+  "..............O.................",
+  ".............OGO................",
+  "............OGWGO...............",
+  "............OGWWGO..............",
+  ".............OGWGO..............",
+  "..............OGO...............",
+  "...............Y................",
+  "..............YYY...............",
+  "...........YYYYYYYYY............",
+  "..........YYYYYYYYYYY...........",
+  ".........YYYYYYYYYYYYY..........",
+  "........YYSSYYYYYYYSSYY.........",
+  "........YYYYYYYYYYYYYYY.........",
+  ".........YYYYYYYYYYYYY..........",
+  "..........YYYYYYYYYYY...........",
+  "...........YYYYYYYYY............",
+  "............YYYYYYY.............",
+  ".............YYYYY..............",
+  "..............YYY...............",
+  "................................",
+  "................................",
+  "................................",
+  "................................",
+  "................................",
+  "................................",
+  "................................",
+  "................................",
+  "................................",
+  "................................",
+  "................................"
+];
 
 var AVATAR = [
   "..KKKK..",
@@ -1318,6 +1386,7 @@ function drawTitle(){
   head.style.gap = "10px";
   var h = el("h1",null,"THE NARROW WAY");
   head.appendChild(h);
+  head.appendChild(el("p","byline","by Andrew Gooden"));
   head.appendChild(el("p","tagline","You are one ordinary person, and the Scriptures happen to you from Sodom to the last day. Sixteen endings. Most of them you would not choose on purpose."));
   frag.appendChild(head);
 
@@ -1387,7 +1456,7 @@ function drawTitle(){
 
 function draw(){
   resetBtn.hidden = !S;
-  if (!S){ footnote.textContent = "A choose-your-own-adventure through the Scriptures. Every path is survivable. Not every path is survived."; drawTitle(); window.scrollTo(0,0); return; }
+  if (!S){ footnote.textContent = "The Narrow Way — a game by Andrew Gooden"; drawTitle(); window.scrollTo(0,0); return; }
   var node = N[S.node] || N.s1;
   footnote.textContent = "Press 1-9 to choose. Your run is saved in this browser.";
   if (node.end) drawEnding(node); else drawStory(node);
@@ -1422,6 +1491,46 @@ document.addEventListener("keydown", function(e){
   if (!meets(S, c.req)) return;
   choose(c);
 });
+
+/* ---- splash ---- */
+(function(){
+  var sp = document.getElementById("splash");
+  if (!sp) return;
+  var art = document.getElementById("splashArt");
+  var hint = document.getElementById("splashHint");
+  var done = false;
+  var flick = null;
+
+  document.body.setAttribute("data-splash","1");
+  drawGrid(art, LAMP, 32, 32, null);
+
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduce){
+    var alts = ["#d9622b","#e0b24a","#b8432a","#f0943f"];
+    var i = 0;
+    flick = setInterval(function(){
+      i++;
+      drawGrid(art, LAMP, 32, 32, {O: alts[i % alts.length]});
+    }, 380);
+  }
+
+  function dismiss(){
+    if (done) return;
+    done = true;
+    if (flick) clearInterval(flick);
+    Snd.wake();
+    Snd.act("Act I");
+    sp.setAttribute("data-going","1");
+    document.body.removeAttribute("data-splash");
+    setTimeout(function(){ if (sp.parentNode) sp.parentNode.removeChild(sp); }, 900);
+  }
+
+  sp.addEventListener("click", dismiss);
+  sp.addEventListener("keydown", dismiss);
+  document.addEventListener("keydown", function once(){ dismiss(); document.removeEventListener("keydown", once); });
+  setTimeout(function(){ if (hint) hint.textContent = "Tap to begin"; }, 400);
+  setTimeout(dismiss, 6000);
+})();
 
 /* restore across live updates */
 function boot(data){
