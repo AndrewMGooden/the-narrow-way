@@ -1,0 +1,1448 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;-webkit-tap-highlight-color:transparent}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>The Narrow Way</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Press+Start+2P&display=swap">
+<style>
+/* Layout: a lamp-lit codex page — pixel scene window on top, scripture beneath, choices as cut stone.
+   Deliberate single-world design: this is a lamp in the dark, so there is no light theme. */
+:root{
+  color-scheme: dark;
+  --ink:#0d0a16;        /* deep indigo-black ground */
+  --vault:#161029;      /* panel */
+  --vault-2:#1f1838;    /* raised panel */
+  --edge:#352a57;       /* border */
+  --lamp:#e0b24a;       /* oil-lamp gold, the accent */
+  --lamp-dim:#8a6c2e;
+  --flame:#d9622b;
+  --blood:#a2302e;
+  --parch:#ece4d2;      /* body text */
+  --parch-dim:#9a90ac;
+  --sky:#7fa6d8;
+  --font-display:"Press Start 2P","Courier New",monospace;
+  --font-body:"EB Garamond",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--ink);
+  color:var(--parch);
+  font-family:var(--font-body);
+  font-size:19px;
+  line-height:1.62;
+  padding-block:20px 48px;
+  padding-left:16px;padding-right:16px;
+  background-image:radial-gradient(ellipse 80% 55% at 50% 0%, #1b1333 0%, var(--ink) 70%);
+  background-attachment:fixed;
+}
+.frame{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+
+/* ---- type ---- */
+.px{font-family:var(--font-display);line-height:1.5;letter-spacing:.02em}
+h1{margin:0;font-family:var(--font-display);font-size:clamp(17px,5.2vw,26px);color:var(--lamp);
+   text-wrap:balance;line-height:1.5;text-shadow:0 0 18px rgba(224,178,74,.35)}
+.tagline{margin:0;color:var(--parch-dim);font-size:18px;font-style:italic;text-wrap:balance}
+.act{font-family:var(--font-display);font-size:9px;color:var(--lamp-dim);letter-spacing:.14em;text-transform:uppercase}
+.prose p{margin:0 0 .85em}
+.prose p:last-child{margin-bottom:0}
+.verse{border-left:3px solid var(--lamp-dim);padding:2px 0 2px 14px;color:var(--lamp);
+  font-style:italic;font-size:17px;opacity:.92}
+
+/* ---- scene window ---- */
+.window{position:relative;border:3px solid var(--edge);background:#000;overflow:hidden}
+.window canvas{display:block;width:100%;height:auto;aspect-ratio:32/14;image-rendering:pixelated}
+.window::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);
+  box-shadow:inset 0 0 60px rgba(13,10,22,.85)}
+
+/* ---- hud ---- */
+.hud{display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+  border:2px solid var(--edge);background:var(--vault);padding:12px 14px}
+.hud canvas{width:48px;height:48px;image-rendering:pixelated;flex:none;
+  border:2px solid var(--edge);background:var(--vault-2)}
+.who{min-width:0;flex:1 1 150px}
+.who .nm{font-family:var(--font-display);font-size:11px;color:var(--parch);word-break:break-word}
+.who .og{font-size:16px;color:var(--parch-dim);font-style:italic}
+.meters{display:grid;grid-template-columns:repeat(2,minmax(96px,1fr));gap:7px 14px;flex:2 1 230px;min-width:0}
+.meter{min-width:0}
+.meter .lab{display:flex;justify-content:space-between;font-family:var(--font-display);
+  font-size:7px;color:var(--parch-dim);letter-spacing:.1em;margin-bottom:3px}
+.meter .lab b{color:var(--parch);font-weight:400;font-variant-numeric:tabular-nums}
+.bar{height:8px;background:#0b0816;border:1px solid var(--edge);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--c,var(--lamp));transition:width .35s ease}
+
+/* ---- choices ---- */
+.choices{display:flex;flex-direction:column;gap:10px}
+button.pick{
+  font:inherit;text-align:left;color:var(--parch);background:var(--vault-2);
+  border:2px solid var(--edge);border-left-width:5px;padding:12px 14px;cursor:pointer;
+  display:flex;gap:12px;align-items:flex-start;min-width:0;
+  transition:background .14s,border-color .14s,transform .14s}
+button.pick .n{font-family:var(--font-display);font-size:9px;color:var(--lamp-dim);
+  padding-top:5px;flex:none}
+button.pick .tx{min-width:0;flex:1}
+button.pick:hover:not(:disabled),button.pick:focus-visible:not(:disabled){
+  background:#2a2049;border-color:var(--lamp);transform:translateX(3px)}
+button.pick:hover:not(:disabled) .n{color:var(--lamp)}
+button.pick:disabled{opacity:.45;cursor:not-allowed;border-left-color:var(--blood)}
+button.pick .req{display:block;font-family:var(--font-display);font-size:7px;
+  color:var(--blood);letter-spacing:.08em;margin-top:7px}
+:focus-visible{outline:2px solid var(--lamp);outline-offset:2px}
+
+/* ---- marks ---- */
+.marks{display:flex;flex-wrap:wrap;gap:6px}
+.mark{font-family:var(--font-display);font-size:7px;letter-spacing:.06em;
+  border:1px solid var(--edge);background:var(--vault);color:var(--parch-dim);padding:5px 7px}
+.mark.good{border-color:var(--lamp-dim);color:var(--lamp)}
+.mark.bad{border-color:#5a2020;color:#d4716f}
+.section-lab{font-family:var(--font-display);font-size:7px;letter-spacing:.14em;
+  color:var(--parch-dim);text-transform:uppercase}
+
+/* ---- title screen ---- */
+.card{border:2px solid var(--edge);background:var(--vault);padding:18px}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+label.lab{font-family:var(--font-display);font-size:8px;letter-spacing:.12em;color:var(--lamp-dim);text-transform:uppercase}
+input[type=text]{font:inherit;font-size:19px;color:var(--parch);background:#0b0816;
+  border:2px solid var(--edge);padding:9px 11px;width:100%}
+input[type=text]:focus{border-color:var(--lamp);outline:none}
+.origins{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
+.origin{font:inherit;text-align:left;cursor:pointer;background:var(--vault-2);
+  border:2px solid var(--edge);padding:11px 12px;color:var(--parch);min-width:0;
+  display:flex;flex-direction:column;gap:3px;transition:border-color .14s,background .14s}
+.origin:hover{border-color:var(--lamp-dim)}
+.origin[aria-pressed=true]{border-color:var(--lamp);background:#2a2049}
+.origin .t{font-family:var(--font-display);font-size:9px;line-height:1.6;color:var(--lamp)}
+.origin .b{font-size:16px;color:var(--parch-dim);font-style:italic}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+button.go{font-family:var(--font-display);font-size:10px;letter-spacing:.06em;cursor:pointer;
+  background:var(--lamp);color:#1a1205;border:2px solid var(--lamp);padding:13px 18px;
+  transition:filter .14s}
+button.go:hover{filter:brightness(1.12)}
+button.go:disabled{background:var(--vault-2);color:var(--parch-dim);border-color:var(--edge);cursor:not-allowed}
+button.ghost{font-family:var(--font-display);font-size:9px;cursor:pointer;background:transparent;
+  color:var(--parch-dim);border:2px solid var(--edge);padding:11px 14px}
+button.ghost:hover{border-color:var(--lamp-dim);color:var(--lamp)}
+
+/* ---- ending ---- */
+.badge{display:inline-block;font-family:var(--font-display);font-size:8px;letter-spacing:.16em;
+  padding:7px 10px;border:2px solid currentColor;text-transform:uppercase}
+.end-death{color:#d4716f}.end-bond{color:#9ba3bd}.end-doom{color:#b8322f}
+.end-win{color:var(--lamp)}.end-crown{color:#f6edd4}
+.end-title{font-family:var(--font-display);font-size:clamp(13px,4.2vw,19px);line-height:1.6;margin:0;text-wrap:balance}
+.ledger{border:2px solid var(--edge);background:var(--vault);padding:14px;display:flex;flex-direction:column;gap:12px}
+.foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;
+  border-top:1px solid var(--edge);padding-top:14px;color:var(--parch-dim);font-size:15px;font-style:italic}
+.foot span:first-child{flex:1 1 220px;min-width:0}
+.footbtns{display:flex;gap:8px;flex-wrap:wrap;flex:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div id="app"></div>
+  <div class="foot">
+    <span id="footnote">A choose-your-own-adventure through the Scriptures. Every path is survivable. Not every path is survived.</span>
+    <span class="footbtns">
+      <button class="ghost" id="sound" type="button" aria-pressed="true">Sound on</button>
+      <button class="ghost" id="reset" type="button" hidden>Abandon run</button>
+    </span>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ========== pixel art ========== */
+var PAL = {
+  ".":null, K:"#07050e", N:"#171030", D:"#2b1f4d", P:"#463273", V:"#6b5a9e",
+  S:"#c9bda0", W:"#f2ecd8", G:"#e0b24a", O:"#d9622b", R:"#9e2b2b",
+  B:"#2f5d8a", A:"#74a9d8", E:"#3f6b43", T:"#6b4a2a", Y:"#a8813f", C:"#6b5a9e"
+};
+
+var SCENES = {
+  title:[
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNNONNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNOGONNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNOGGGONNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNOGWGONNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNOGGONNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNNYYNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNYYYYYYYYNNNNNNNNNNNN",
+    "NNNNNNNNNNNYYYYYYYYYYNNNNNNNNNNN",
+    "NNNNNNNNNNNNYYYYYYYYNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNYYYYNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+  ],
+  sodom:[
+    "NNNNNNNNNNWNNNNNNNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNNNNNNNNWNNNNNNNNNN",
+    "NNNONNNNNNNNNNNNNNNNNNNNONNNNNNN",
+    "NNNNNNNNNNNNNNNONNNNNNNNNNNNNONN",
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+    "NNDDNNNNDDDNNNNNNDDDDNNNNNDDDNNN",
+    "NNDDNNDDDDDNNNDDDDDDDNNDDDDDDNNN",
+    "NDDDDDDDDDDDDDDDDDDDDDDDDDDDDDNN",
+    "DDDGDDDDDGDDDDDDDGDDDDGDDDDDDDDD",
+    "DDDDDDDGDDDDDDDDDDGDDDDDDDDGDDDD",
+    "OODDOODDDDOODDDDOODDDDOODDDOODDD",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+    "TYTTTTTTYTTTTTTTTTTYTTTTTTTTTTYT"
+  ],
+  salt:[
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+    "NNNNONNNNNNNNNNNNNNNNNNNONNNNNNN",
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNNWWNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNSWWSNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNSSWWSSNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNSSWWSSNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNSSSWWSSSNNNNNNNNNNNN",
+    "NNNNNNNNNNNNSSSSSSSSNNNNNNNNNNNN",
+    "TTTTTTTTTTTTSSSSSSSSTTTTTTTTTTTT",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+  ],
+  egypt:[
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNNNNNNNNNDNNNNNNNNN",
+    "NNNNNNNNNNNNNNNNNNNNNDDDNNNDNNNN",
+    "NNNNNNNNNNNNNNNNNNNNDDDDDNDDDNNN",
+    "NNNNNNNNNNNNNNNNNNNDDDDDDDDDDDNN",
+    "NNNRRRRRRRNNNNNNNNDDDDDDDDDDDDDN",
+    "NNNRSSSSSRNNNNNNNDDDDDDDDDDDDDDD",
+    "NNNRSKKKSRNNNNNDDDDDDDDDDDDDDDDD",
+    "NNNRSKKKSRNNNDDDDDDDDDDDDDDDDDDD",
+    "YYYRSKKKSRYYYYYYYYYYYYYYYYYYYYYY",
+    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
+    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY"
+  ],
+  sea:[
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+    "BBBNNNNNNNNNNNNNNNNNNNNNNNNNBBBB",
+    "BBBBNNNNNNNNNNNNNNNNNNNNNNNBBBBB",
+    "ABBBBNNNNNNNNNNNNNNNNNNNNNBBBBBA",
+    "ABBBBBNNNNNNNNNNNNNNNNNNNBBBBBBA",
+    "ABBBBBBNNNNNNNNNNNNNNNNNBBBBBBBA",
+    "AABBBBBBNNNNNNNNNNNNNNNBBBBBBBAA",
+    "AABBBBBBBNNNNNNNNNNNNNBBBBBBBBAA",
+    "AAABBBBBBBNNNNNNNNNNNBBBBBBBBAAA",
+    "AAABBBBBBBBNNNNNNNNNBBBBBBBBBAAA",
+    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
+    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
+    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+  ],
+  sinai:[
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNNOONNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNOOGGOONNNNNNNNNNNNN",
+    "NNNNNNNNNNNNOOGGGGONNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNOGGGGONNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNDDDDNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNDDDDDDNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNDDDDDDDDNNNNNNNNNNNN",
+    "NNNNNNNNNNNDDDDDDDDDDNNNNNNNNNNN",
+    "NNNNNNNNNDDDDDDDDDDDDDNNNNNNNNNN",
+    "NNNNNNNDDDDDDDDDDDDDDDDNNNNNNNNN",
+    "NNNNNDDDDDDDDDDDDDDDDDDDDNNNNNNN",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+  ],
+  jericho:[
+    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+    "VPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPV",
+    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+    "SSPSSPSSPSSPSSPSSPSSPSSPSSPSSPSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSPPPSSSSSSSSKKRSSSSSSS",
+    "SSSSSSSSSSPPPSSSSSSSSSKKRSSSSSSS",
+    "SSSSSSSSSPPPSSSSSSSSSSSSRSSSSSSS",
+    "SSSSSSSSSPPSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "TTSTTSTTTTTSTTTTTSTTTTSTTTTSTTTT",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+  ],
+  babylon:[
+    "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
+    "DDDDDDDDDDDDDDDGGDDDDDDDDDDDDDDD",
+    "DDDDDDDDDDDDDDGGGGDDDDDDDDDDDDDD",
+    "DDDDDDDDDDDDDDDGGDDDDDDDDDDDDDDD",
+    "DDDDDDDDDDDDDGGGGGGDDDDDDDDDDDDD",
+    "DDDDDDDDDDDDDGGGGGGDDDDDDDDDDDDD",
+    "DDDDDDDDDDDDDDGGGGDDDDDDDDDDDDDD",
+    "DDDDDDDDDDDDDDGGGGDDDDDDDDDDDDDD",
+    "DDDDDDDDDDDDDDGGGGDDDDDDDDDDDDDD",
+    "ODDDDDDDDDDDDDGGGGDDDDDDDDDDDDDO",
+    "OODDDDDDDDDDGGGGGGGGDDDDDDDDDOOO",
+    "OOODDDDDDDDGGGGGGGGGGDDDDDDDOOOO",
+    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
+    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY"
+  ],
+  lions:[
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKGGGGGGKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKGGGGKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKYYYYKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKGKKKKKKKKKKKKKKKGKKKKKKKGKKK",
+    "KKKKKKKKKKGKKKKKKKKKKKKKKKKKKKKK",
+    "KKTTTKKKKKKKKKKKKKKTTTKKKKTTTKKK",
+    "KTTTTTKKKKKTTTKKKKTTTTTKKTTTTTTK",
+    "TTTTTTTKKKTTTTTKKTTTTTTTTTTTTTTT",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK"
+  ],
+  galilee:[
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAGGAAAA",
+    "AAAAAAAAAAAAAAAAAAAAAAAAAGGGGAAA",
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAGGAAAA",
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "EEEEAAAAAAEEEEEEEAAAAAAAAAAAAAAA",
+    "EEEEEEAAEEEEEEEEEEEEAAAEEEEEAAAA",
+    "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
+    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+    "BBBBBBBBBBBBTKKKKTBBBBBBBBBBBBBB",
+    "BBBBBBBBBBBBTTTTTTBBBBBBBBBBBBBB",
+    "ABBBBBBBBBBBBTTTTBBBBBBBBBBBBBBA",
+    "ABBBABBBBBBBABBBBBBBBABBBBBABBBB"
+  ],
+  golgotha:[
+    "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNDDNNNNNNNDDDNNNNNNN",
+    "NNNNNNNNNNNNNNNTTNNNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNNNTTNNNNNNNNNNNNNNN",
+    "NNNNNNTTNNNNTTTTTTTTNNNNNNNNNNNN",
+    "NNNNNNTTNNNNNNNTTNNNNNNNTTNNNNNN",
+    "NNNNTTTTTTNNNNNTTNNNNNTTTTTTNNNN",
+    "NNNNNNTTNNNNNNNTTNNNNNNNTTNNNNNN",
+    "NNNNNNTTNNNNNNNTTNNNNNNNTTNNNNNN",
+    "NNNNNNTTNNNNNNNTTNNNNNNNTTNNNNNN",
+    "NNNNNNTTNNNNNNNTTNNNNNNNTTNNNNNN",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+  ],
+  rome:[
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "KKKSKKKSKKKSKKKSKKKSKKKSKKKSKKKS",
+    "KKKSKKKSKKKSKKKSKKKSVVVSKKKSKKKS",
+    "KKKSKKKSKKKSKKKSKKKSVVVSKKKSKKKS",
+    "OKKSKKKSKKKSKKKSKKKSKKKSKKKSKKKS",
+    "OKKSKKKSKKKSKKKSKKKSKKKSKKKSKKKS",
+    "OKKSKKKSKKKSKKKSKKKSKKKSKKKSKKKS",
+    "KKKSKKKSKKKSKKKSKKKSKKKSKKKSKKKS",
+    "KKKSKKKSKKKSKKKSKKKSKKKSKKKSKKKS",
+    "KKKSKKKSKKKSKKKSKKKSKKKSKKKSKKKS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "OKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK"
+  ],
+  wilderness:[
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "AAAAAAAAAAAAAAAAAAAGGAAAAAAAAAAA",
+    "AAAAAAAAAAAAAAAAAAGGGGAAAAAAAAAA",
+    "AAAAAAAAAAAAAAAAAAAGGAAAAAAAAAAA",
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "YYYYYYAAAAYYYYYYYYYAAAYYYYYYYYYY",
+    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
+    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
+    "YYYSSYYYYYYYYYYYYYSSYYYYYYYYYYYY",
+    "YYSSSSYYYYYSSYYYYSSSSYYYYYSSYYYY",
+    "YYYSSYYYYYSSSSYYYYSSYYYYYSSSSYYY",
+    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
+    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+  ],
+  throne:[
+    "KKKKKKKKKKKKKGKKKGKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKGGGGGGKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKGGGGGGGGKKKKKKKKKKKKK",
+    "KKKKKKKKKKGGGWWWWGGGKKKKKKKKKKKK",
+    "KKKKKKKKKGGGWWWWWWGGGKKKKKKKKKKK",
+    "KKKKKKKKGGGGWWWWWWGGGGKKKKKKKKKK",
+    "KKKKKKKGGGGWWWWWWWWGGGGKKKKKKKKK",
+    "KKKKKKKGGGGWWWWWWWWGGGGKKKKKKKKK",
+    "KKKKKKKKGGGGWWWWWWGGGGKKKKKKKKKK",
+    "KKKKKKKKKGGGGGGGGGGGGKKKKKKKKKKK",
+    "KKKKKKKKKKGGGGGGGGGGKKKKKKKKKKKK",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK"
+  ],
+  gate:[
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "WKKKKKKKKKKWKKKKKKKKKWKKKKKKKKWK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKGGKKKKGGKKKKKKKKKKKKGGKKKKGGKK",
+    "KGGGGKKGGGGKKKKKKKKKKGGGGKKGGGGK",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGWWWWWWGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGWWWWWWWWGGGGGGGGGGGGG",
+    "GGGGGGGGGGGWWWWWWWWGGGGGGGGGGGGG",
+    "GGGGGGGGGGGWWWWWWWWGGGGGGGGGGGGG",
+    "GGGGGGGGGGGWWWWWWWWGGGGGGGGGGGGG",
+    "YYYYYYYYYYYWWWWWWWWYYYYYYYYYYYYY",
+    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
+    "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY"
+  ],
+  abyss:[
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKRKKKKKKKKKKKKKKKKKK",
+    "KKKKRKKKKKKKKKKKKKKRKKKKKKKKKKKK",
+    "RKKKKKKKKKRKKKKKKKKKKKKKKKRKKKKK",
+    "RRKRRKKRRKRRKKRRKKRRKKRRKRRKKRRK",
+    "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR",
+    "RRORRORRRRRORRRRORRRRORRRRORRRRR",
+    "RORRORRORROORRRORRORRRORRROORRRO",
+    "OOROOROOROOROOROOROOROOROOROOROO",
+    "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
+    "OOOGOOOOOOOOGOOOOOOOOOGOOOOGOOOO",
+    "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+  ],
+  darkness:[
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKDKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKGKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKGKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKDKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+    "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK"
+  ]
+};
+
+var AVATAR = [
+  "..KKKK..",
+  ".KYYYYK.",
+  ".KYKKYK.",
+  ".KYYYYK.",
+  "..KCCK..",
+  ".CCCCCC.",
+  ".CCCCCC.",
+  ".KK..KK."
+];
+
+function drawGrid(cv, rows, w, h, swap){
+  var ctx = cv.getContext("2d");
+  cv.width = w; cv.height = h;
+  ctx.clearRect(0,0,w,h);
+  for (var y=0; y<h; y++){
+    var row = (rows[y] || "");
+    for (var x=0; x<w; x++){
+      var ch = row.charAt(x) || ".";
+      var col = swap && swap[ch] ? swap[ch] : PAL[ch];
+      if (!col) continue;
+      ctx.fillStyle = col;
+      ctx.fillRect(x,y,1,1);
+    }
+  }
+}
+
+/* ========== origins ========== */
+var ORIGINS = [
+  {id:"shepherd", name:"Shepherd of Tekoa", blurb:"Long nights, few words, a staff worn smooth.", robe:"#6b4a2a", fx:{faith:2,courage:1}},
+  {id:"scribe",   name:"Scribe of the Court", blurb:"You can read three tongues and keep a secret.", robe:"#2f5d8a", fx:{wisdom:2,faith:1}},
+  {id:"soldier",  name:"Spearman of the Guard", blurb:"You have stood in a line and not run.", robe:"#9e2b2b", fx:{courage:2,wisdom:1}},
+  {id:"midwife",  name:"Midwife of Goshen", blurb:"You have carried other people's children through worse.", robe:"#3f6b43", fx:{mercy:2,faith:1}}
+];
+
+/* ========== marks ========== */
+var GOOD_MARKS = ["Stood at the Door","Cried the Warning","Blood on the Door","Called Them Back",
+  "Stood with Caleb","Scarlet Cord","Walked in the Fire","Shut the Lions' Mouths","Broke the Roof",
+  "Left All","Owned Him","Stayed to the End","Gave the Tomb","Hid the Church","Faithful unto Death",
+  "Kept Silence","Refused the Mark"];
+var BAD_MARKS = ["Joined the Mob","Double-Minded","Danced at the Calf","Informer","Achan's Portion",
+  "Bowed at Dura","Prayed to the King","Sought Permission","Went Away Sorrowful","Denied Him",
+  "Cried Crucify","Betrayer","Offered Incense","Bought the Paper","Recanted","Took the Mark"];
+var BETRAYALS = ["Betrayer","Cried Crucify","Offered Incense","Recanted","Denied Him","Took the Mark","Joined the Mob"];
+
+/* ========== story ========== */
+var N = {};
+
+/* --- ACT I --- */
+N.s1 = { act:"Act I — The City of the Plain", scene:"sodom",
+ text:["You come down into the valley with a pack of dyed wool, and Sodom opens its gate the way a mouth opens. The streets smell of myrrh and of rot underneath it.",
+       "A man called Lot finds you in the square and will not let you sleep in the open. He takes you under his own roof. At dusk two strangers come to his door, and the whole city seems to turn its head at once."],
+ verse:"Genesis 19:1 — the two angels came to Sodom at even.",
+ choices:[
+  {t:"Draw water for the strangers and give them your corner of the roof.", fx:{mercy:1,faith:1}, to:"s2"},
+  {t:"Keep to your bales. Strangers are not your trade.", to:"s2"},
+  {t:"Go out into the street and see what the city wants with them.", fx:{wisdom:1}, to:"s1b"}
+ ]};
+
+N.s1b = { act:"Act I — The City of the Plain", scene:"sodom",
+ text:["The street is full. Men from every quarter, old and young, pressed against Lot's door and calling for the strangers to be brought out to them. Lot stands on his step with his arms spread like a man holding back water.",
+       "Someone behind you says your name, friendly, and asks whose side you are on."],
+ verse:"Genesis 19:4 — the men of the city compassed the house round.",
+ choices:[
+  {t:"Push through and set your back against the door beside him.", fx:{courage:2,faith:1}, mark:"Stood at the Door", to:"s2"},
+  {t:"Join the crowd. One voice among hundreds is no sin.", fx:{faith:-2,mercy:-2}, mark:"Joined the Mob", to:"s2"},
+  {t:"Back away quietly into the dark and go to bed.", fx:{courage:-1}, to:"s2"}
+ ]};
+
+N.s2 = { act:"Act I — The City of the Plain", scene:"sodom",
+ text:["Before light the strangers take Lot by the hand. Their voices are flat and certain. The outcry against this place has come up, they say, and they were sent to finish it. Get out. Go to the mountain. Do not stop anywhere in the plain, and do not look behind you.",
+       "Lot's sons-in-law laugh at him and roll over in their beds."],
+ verse:"Genesis 19:17 — Escape for thy life; look not behind thee.",
+ choices:[
+  {t:"Take nothing. Run for the hills while it is still dark.", fx:{courage:1}, to:"s3"},
+  {t:"Wake the houses on your street first. Shout until they answer.", fx:{mercy:2,courage:1}, mark:"Cried the Warning", to:"s2b"},
+  {t:"Go back for the wool. It is a year of your life in those bales.", fx:{faith:-2}, to:"s2c"}
+ ]};
+
+N.s2c = { act:"Act I — The City of the Plain", scene:"sodom",
+ text:["You are at your own doorway with the first bale on your shoulder when something comes through the roof of the house opposite and goes on burning on the floor of it, steadily, like it intends to stay.",
+       "The street is lit well enough now to see the far end of it. There are two more bales inside and they are the better dye."],
+ choices:[
+  {t:"Drop it. Run.", fx:{faith:1,courage:-1}, to:"s3"},
+  {t:"Two more. You can carry two more.", to:"d_fire"}
+ ]};
+
+N.s2b = { act:"Act I — The City of the Plain", scene:"sodom",
+ text:["You beat on six doors. Two open. Four curse you through the wood.",
+       "By the time you reach the gate the sky behind you has gone the colour of a forge and the air has begun to sing. Somewhere back in the smoke a woman screams your name, and you know the voice from the market."],
+ verse:"Genesis 19:24 — the Lord rained upon Sodom brimstone and fire.",
+ choices:[
+  {t:"Keep your eyes on the mountain and keep running.", fx:{faith:1,courage:1}, to:"s3"},
+  {t:"Turn. You cannot leave her in that.", fx:{mercy:1}, to:"d_salt"},
+  {t:"Shout for her to follow — without slowing, without turning your head.", fx:{wisdom:2}, to:"s3"}
+ ]};
+
+N.s3 = { act:"Act I — The City of the Plain", scene:"sodom",
+ text:["You reach the ridge above Zoar as the plain goes under. Fire comes down in sheets, and by noon the valley is one flat white glare with ash settling on your shoulders like snow out of season.",
+       "Lot's wife is not among those who came up. Nobody explains. You sleep in a cave that night and wake older than you were."],
+ choices:[{t:"Let the years pass.", to:"b1"}]};
+
+/* --- ACT II --- */
+N.b1 = { act:"Act II — The House of Bondage", scene:"egypt",
+ text:["Four hundred years go by the way a night goes by in a fever. You come back to yourself in Goshen with a brick-maker's hands, cracked white to the wrist with straw dust.",
+       "Nine times the land of Egypt has been struck, and nine times Pharaoh has hardened. Tonight an old man with a shepherd's staff is walking the lanes telling every household to kill a lamb and put its blood on the door."],
+ verse:"Exodus 12:13 — when I see the blood, I will pass over you.",
+ choices:[
+  {t:"Take the lamb. Strike the lintel and the two side posts.", fx:{faith:2}, mark:"Blood on the Door", to:"b2"},
+  {t:"Bar the door with iron instead. A strong door has never failed you.", fx:{faith:-2}, to:"b1b"},
+  {t:"Mark the door — and bury a small Egyptian charm under the threshold, just in case.", fx:{faith:-1,wisdom:-1}, mark:"Double-Minded", to:"b2"}
+ ]};
+
+N.b1b = { act:"Act II — The House of Bondage", scene:"egypt",
+ text:["The bar goes across at the eleventh hour and it is a good bar. Outside, the lane has gone quiet in a way you have never heard a lane go quiet.",
+       "Your wife is standing between you and the door with the basin in one hand and a bunch of hyssop in the other, and she has not moved or blinked for some time."],
+ choices:[
+  {t:"Take the hyssop out of her hand and go and do the door.", fx:{faith:2}, mark:"Blood on the Door", to:"b2"},
+  {t:"Tell her to put it down. You have decided.", to:"d_firstborn"}
+ ]};
+
+N.b2 = { act:"Act II — The House of Bondage", scene:"sea",
+ text:["At midnight a cry goes up out of Egypt such as has never been heard in it. By morning you are walking out with six hundred thousand others, your kneading trough on your shoulder and your neighbour's gold in your belt.",
+       "Three days later the sea is in front of you and Pharaoh's chariots are a brown line of dust behind. The wind blows all night. At dawn the water is standing up in two walls and there is dry mud between them."],
+ verse:"Exodus 14:21 — and the waters were divided.",
+ choices:[
+  {t:"Walk in between the walls of water.", fx:{courage:2,faith:1}, to:"b3"},
+  {t:"Run south along the shore and hide in the reeds until it is over.", fx:{courage:-2}, to:"d_chariot"},
+  {t:"Go back and kneel to Pharaoh. Slavery is still breathing.", fx:{faith:-3}, to:"p_brick"}
+ ]};
+
+N.b3 = { act:"Act II — The House of Bondage", scene:"sinai",
+ text:["Sinai smokes for forty days and Moses does not come down. The camp gets loud, and then louder. Aaron takes the gold out of the people's ears and makes a calf of it and says: these are thy gods.",
+       "By the second night there is a feast around it, and very little clothing, and the whole valley is laughing at once."],
+ verse:"Exodus 32:4 — and he made it a molten calf.",
+ choices:[
+  {t:"Give your gold. Dance. Everyone in the camp is doing it.", fx:{faith:-3}, mark:"Danced at the Calf", to:"b3b"},
+  {t:"Stand in your tent door and watch, and give nothing.", fx:{faith:1}, to:"b4"},
+  {t:"Walk through the firelight calling them back to the mountain.", req:{faith:7}, fx:{faith:2,courage:2}, mark:"Called Them Back", to:"b4"}
+ ]};
+
+N.b3b = { act:"Act II — The House of Bondage", scene:"sinai",
+ text:["Moses comes down the mountain with two stone tablets and breaks them at the foot of it. Then he stands in the gate of the camp and asks who is on the Lord's side.",
+       "The sons of Levi come to him with their swords drawn, and they begin at the edge of the camp and work inward. You are still holding a cup."],
+ choices:[
+  {t:"Drop the cup and run for the gate.", fx:{faith:1}, to:"b4"},
+  {t:"Keep dancing. They will not touch a crowd this size.", to:"d_sword"}
+ ]};
+
+N.b4 = { act:"Act II — The House of Bondage", scene:"wilderness",
+ text:["Kadesh-barnea. Twelve men go up to see the land and come back carrying one cluster of grapes on a pole between two of them. Ten of them are grey in the face. There are giants, they say, and we were as grasshoppers in our own sight.",
+       "Caleb and Joshua tear their clothes and say the land is very good. The whole camp is shouting at once, and someone at the back has already begun taking names for a captain to lead them back to Egypt."],
+ verse:"Numbers 13:30 — we are well able to overcome it.",
+ choices:[
+  {t:"Shout with Caleb. Let them hear you do it.", fx:{faith:2,courage:1}, mark:"Stood with Caleb", to:"b5"},
+  {t:"Go to Moses' tent and ask him plainly what the Lord has said.", fx:{wisdom:2,faith:1}, to:"b5"},
+  {t:"Weep with the ten. Better Egypt than giants.", fx:{faith:-2}, to:"d_wander"},
+  {t:"Say nothing and wait to see which way the camp turns.", fx:{faith:-2,wisdom:-1}, to:"b5"}
+ ]};
+
+N.b5 = { act:"Act II — The House of Bondage", scene:"wilderness",
+ text:["Forty years. You bury your parents in sand and teach your own children to walk in it. The manna comes every single morning and you learn to hate it, and then, late, to love it.",
+       "Then one spring the Jordan stands up in a heap and you cross over on dry ground, and you are not young any more."],
+ choices:[{t:"Cross over.", to:"j1"}]};
+
+/* --- ACT III --- */
+N.j1 = { act:"Act III — The Walls of Jericho", scene:"jericho",
+ text:["You have lodged in Jericho before. The inn built into the wall takes caravan men and asks nothing; the woman who keeps it is called Rahab.",
+       "Tonight two Israelites are sitting in her common room with the dust of the ford still on them, and there is knocking at the street door, and the king's officers are outside asking after strangers."],
+ verse:"Joshua 2:4 — and she hid them.",
+ choices:[
+  {t:"Help her carry them up and bury them under the flax on the roof.", fx:{courage:2,mercy:1,faith:1}, mark:"Scarlet Cord", to:"j2"},
+  {t:"Open the door and point up the stairs.", fx:{faith:-2,mercy:-2}, mark:"Informer", to:"j2"},
+  {t:"Go to your room and shut the door. Not your city, not your war.", to:"j2"}
+ ]};
+
+N.j2 = { act:"Act III — The Walls of Jericho", scene:"jericho",
+ text:["For six days the army walks around the city once a day and says nothing at all, and the men on the wall laugh themselves hoarse. On the seventh they come round seven times.",
+       "Then every ram's horn in Israel sounds at once, and the ground starts moving under the city like a mule shrugging off a load."],
+ verse:"Joshua 6:20 — the wall fell down flat.",
+ choices:[
+  {t:"Stay inside the house under the scarlet cord and hold the children down.", only:{mark:"Scarlet Cord"}, fx:{faith:1}, to:"j3"},
+  {t:"Run to Rahab's door and beat on it until somebody opens.", to:"j2x"},
+  {t:"Make for the gate and try to outrun it.", to:"d_wall"},
+  {t:"Climb to the wall-top to see the army properly.", to:"d_wall"}
+ ]};
+
+N.j2x = { check:function(s){ return s.mercy >= 4 || s.marks.indexOf("Cried the Warning") >= 0; },
+ pass:"j2y", fail:"d_wall" };
+
+N.j2y = { act:"Act III — The Walls of Jericho", scene:"jericho",
+ text:["She knows your face from the common room. She has her own father and mother and brothers in that one room already and there is no space in it at all, and she opens the door anyway and pulls you in by the front of your coat.",
+       "Nobody speaks. The floor is moving. Somebody's youngest is counting, out loud, for no reason anyone can work out afterwards."],
+ verse:"Joshua 6:25 — and Joshua saved Rahab alive, and her father's household.",
+ fx:{faith:1,mercy:1},
+ choices:[{t:"Hold on.", to:"j3"}]};
+
+N.j3 = { act:"Act III — The Walls of Jericho", scene:"jericho",
+ text:["The wall goes down flat in every direction but one: the strip of masonry your room is sitting on. You come out of the smoke an Israelite by adoption.",
+       "A week later the army is beaten at Ai and thirty-six men die, and Joshua tears his clothes, because somebody took from the devoted spoil. That night you are on watch and you find it in the brush — a wedge of gold and a very fine Babylonish garment — and nobody is looking anywhere near you."],
+ verse:"Joshua 7:21 — then I coveted them, and took them.",
+ choices:[
+  {t:"Take it. Nobody saw. God does not audit brush piles.", fx:{faith:-3}, mark:"Achan's Portion", to:"d_stoned"},
+  {t:"Carry it to Joshua's tent and lay it down in front of him.", fx:{faith:2,wisdom:1}, to:"j4"},
+  {t:"Leave it where it lies and say nothing to anyone.", fx:{wisdom:-1}, to:"j4"}
+ ]};
+
+N.j4 = { act:"Act III — The Walls of Jericho", scene:"jericho",
+ text:["Generations turn over like pages. Judges, then kings, then worse kings. The temple burns.",
+       "You are chained in a line of captives walking east into a country of flat rivers and tall towers, and somebody up ahead is singing one of the songs of Zion, badly, and being told to stop."],
+ choices:[{t:"Walk east.", to:"k1"}]};
+
+/* --- ACT IV --- */
+N.k1 = { act:"Act IV — The Plain of Dura", scene:"babylon",
+ text:["An image of gold ninety feet high, and a herald, and behind the herald a furnace they have been feeding since before dawn.",
+       "The rule is simple and has been read out twice. When the music plays, everyone goes down on their face. When it stops, anyone still standing goes into the fire. The flutes start."],
+ verse:"Daniel 3:6 — whoso falleth not down shall be cast into the furnace.",
+ choices:[
+  {t:"Bow. God knows your heart; your knees are only knees.", fx:{faith:-3}, mark:"Bowed at Dura", to:"k2"},
+  {t:"Stand.", req:{faith:10}, to:"k1b"},
+  {t:"Stumble and go down on your face as though you had tripped.", fx:{wisdom:1,faith:-1}, mark:"Double-Minded", to:"k2"},
+  {t:"Stay up, and when they come for you, say you were only stretching.", fx:{faith:-2,courage:-1}, to:"k2"}
+ ]};
+
+N.k1b = { act:"Act IV — The Plain of Dura", scene:"babylon",
+ text:["Three others are standing: three young men of Judah, further down the line, and not one of them looks at you.",
+       "The king goes the colour of brick and orders the furnace heated seven times hotter, and the men who carry you to the mouth of it die of the heat on the way. You go in. And you do not burn. You are walking about in there, the four of you — and then there are five, and the fifth is not bound, and does not look like a man."],
+ verse:"Daniel 3:25 — and the form of the fourth is like the Son of God.",
+ fx:{faith:3,courage:2}, mark:"Walked in the Fire",
+ choices:[{t:"Walk out.", to:"k2"}]};
+
+N.k2 = { act:"Act IV — The Plain of Dura", scene:"babylon",
+ text:["Years later, under a different king, the presidents of the realm draft a very pretty law: for thirty days no one may ask anything of any god or man except the king, on pain of the lions.",
+       "Your window opens toward Jerusalem. They have stationed a man in the street below it who does nothing all day but watch windows."],
+ verse:"Daniel 6:10 — his windows being open toward Jerusalem.",
+ choices:[
+  {t:"Open the window at the third hour and kneel, as you always have.", fx:{courage:2,faith:1}, to:"k2b"},
+  {t:"Pray in the cellar where nobody can see you.", fx:{wisdom:1,faith:-1}, to:"k3"},
+  {t:"Make your petitions to the king, as the law says.", fx:{faith:-3}, mark:"Prayed to the King", to:"k3"},
+  {t:"Stop praying for thirty days. It is only thirty days.", fx:{faith:-2}, to:"k3"}
+ ]};
+
+N.k2b = { act:"Act IV — The Plain of Dura", scene:"lions",
+ check:function(s){ return s.courage >= 8; }, pass:"k2c", fail:"d_lions" };
+
+N.k2c = { act:"Act IV — The Plain of Dura", scene:"lions",
+ text:["They let you down on a rope at sundown and roll a stone over the mouth of the den and seal it with the king's own ring.",
+       "All night something stands between you and them. The lions lie along the wall with their heads on their paws like dogs by a fire, and one of them sighs. At first light the stone comes off, and the king, who has not eaten or slept, shouts down into the dark to ask whether your God was able."],
+ verse:"Daniel 6:22 — my God hath sent his angel, and hath shut the lions' mouths.",
+ fx:{faith:2}, mark:"Shut the Lions' Mouths",
+ choices:[{t:"Climb out.", to:"k3"}]};
+
+N.k3 = { act:"Act IV — The Plain of Dura", scene:"babylon",
+ text:["Cyrus lets the exiles go home, and you go. The second temple is smaller, and the old men who remember the first one weep when the foundation is laid while the young men cheer, and from a distance you cannot tell the two sounds apart.",
+       "Then four hundred years, and no prophet in any of them."],
+ choices:[{t:"Wait.", to:"g1"}]};
+
+/* --- ACT V --- */
+N.g1 = { act:"Act V — The Teacher", scene:"galilee",
+ text:["A crowd on the shore near Capernaum, thick enough that the teacher has got into a boat and pushed out a little way so the water will carry his voice. He talks for an hour about seed and soil and says almost nothing you expected.",
+       "Your purse is on your belt and it is heavy. You did well in the four hundred years of silence. When he finishes, people start pressing forward just to touch him."],
+ verse:"Mark 4:1 — and he taught them many things by parables.",
+ choices:[
+  {t:"Push through and ask him what you must do to inherit eternal life.", to:"g1b"},
+  {t:"Carry your neighbour who cannot walk, and open the roof if you must.", req:{mercy:6}, fx:{mercy:2,faith:1,courage:1}, mark:"Broke the Roof", to:"g2"},
+  {t:"Stand at the back and listen. You have heard teachers before.", to:"g2"},
+  {t:"Go and ask the Pharisees first whether this man is approved.", fx:{wisdom:-1,faith:-1}, mark:"Sought Permission", to:"g2"}
+ ]};
+
+N.g1b = { act:"Act V — The Teacher", scene:"galilee",
+ text:["He looks at you, and keeps looking, and you have the particular sensation of being read front to back by someone who is not in a hurry.",
+       "Then he says that you lack one thing. Go, sell what you have, give it to the poor, and come follow me."],
+ verse:"Mark 10:21 — then Jesus beholding him loved him.",
+ choices:[
+  {t:"Sell everything and follow.", fx:{faith:3}, mark:"Left All", to:"g2"},
+  {t:"Go away sorrowful. It is a very great deal of money.", fx:{faith:-3}, mark:"Went Away Sorrowful", to:"g2"},
+  {t:"Offer him half and keep half back for the household.", fx:{faith:-1,wisdom:1}, to:"g2"}
+ ]};
+
+N.g2 = { act:"Act V — The Teacher", scene:"golgotha",
+ text:["Three years. Then a Thursday: torches in an olive grove, and a kiss, and a servant's ear on the ground, and a sword being put away again.",
+       "They take him to the high priest's house and you follow a long way back. In the courtyard there is a charcoal fire and you stand at it to get warm, and the girl who keeps the door looks at your face too long and says, loudly, that this one was with him."],
+ verse:"Luke 22:56 — this man was also with him.",
+ choices:[
+  {t:"I do not know the man.", fx:{faith:-4}, mark:"Denied Him", to:"g3"},
+  {t:"I am his.", fx:{courage:2,faith:1}, mark:"Owned Him", to:"g2b"},
+  {t:"Say nothing. Set down the cup and walk out through the gate.", fx:{faith:-1}, to:"g3"}
+ ]};
+
+N.g2b = { act:"Act V — The Teacher", scene:"golgotha",
+ text:["They take you into the yard and work you over with the flat of a spear and throw you into the street before dawn, and the cold is what wakes you up.",
+       "From where you are lying you can see the hill."],
+ fx:{courage:1},
+ choices:[{t:"Get up.", to:"g3"}]};
+
+N.g3 = { act:"Act V — The Teacher", scene:"golgotha",
+ text:["Golgotha, the third hour. Two thieves and him in the middle. At noon the sky goes the colour of an old bruise and stays that way for three hours, and the crowd thins out as people get frightened and remember somewhere else to be.",
+       "His mother is standing where she can still see his face."],
+ verse:"Matthew 27:45 — there was darkness over all the land.",
+ choices:[
+  {t:"Stand with the women at the foot of it until the end.", fx:{mercy:2,faith:1}, mark:"Stayed to the End", to:"g4"},
+  {t:"Go to the centurion and beg for the body, and give your own new tomb for it.", req:{mercy:8}, fx:{mercy:2,faith:2}, mark:"Gave the Tomb", to:"g4"},
+  {t:"Watch from the far ridge. Close enough to see, far enough to deny.", fx:{faith:-1}, to:"g4"},
+  {t:"Take up the shout with the crowd.", fx:{faith:-6}, mark:"Cried Crucify", to:"g4"}
+ ]};
+
+N.g4 = { act:"Act V — The Teacher", scene:"golgotha",
+ text:["On the first day of the week the stone is off and the grave-clothes are lying there folded, and the men who say they have seen him will not stop saying it no matter what is done to them.",
+       "Fifty days later there is a sound in an upper room like a hard wind coming through a door, and men from every nation in the street below hear their own mother tongue coming out of fishermen."],
+ choices:[{t:"Go out into the city.", to:"r1"}]};
+
+/* --- ACT VI --- */
+N.r1 = { act:"Act VI — The Way", scene:"rome",
+ text:["Saul of Tarsus is going house to house in Jerusalem, hauling out men and women both and making them blaspheme.",
+       "Tonight there are twelve believers in your cellar and horses in your street, and a captain of the temple guard is standing in your doorway asking, quite politely, whether anyone has come to you."],
+ verse:"Acts 8:3 — he made havock of the church.",
+ choices:[
+  {t:"No one has come here.", fx:{courage:2,mercy:2,faith:1}, mark:"Hid the Church", to:"r2"},
+  {t:"Hand him the list of names. You wrote it out yourself for the collection.", fx:{faith:-4,mercy:-3}, mark:"Betrayer", to:"r2"},
+  {t:"Slip out the back window and leave the cellar to its luck.", fx:{faith:-1,courage:-2}, to:"r2"}
+ ]};
+
+N.r2 = { act:"Act VI — The Way", scene:"rome",
+ text:["Thirty years and three thousand miles later you are old, and you are in Rome, and Rome has burned and has decided it was your fault.",
+       "The magistrate is almost kind about it. There is a brazier on a tripod and a box of incense beside it. A pinch on the coals, a few words about the genius of Caesar, and you may go home to your grandchildren tonight."],
+ verse:"Revelation 2:10 — be thou faithful unto death.",
+ choices:[
+  {t:"Take the pinch of incense. It is a formality, and God is not petty.", fx:{faith:-4}, mark:"Offered Incense", to:"r3"},
+  {t:"Buy a certificate from the clerk who sells them and never go near the brazier.", fx:{wisdom:1,faith:-2}, mark:"Bought the Paper", to:"r3"},
+  {t:"Refuse.", to:"r2b"}
+ ]};
+
+N.r2b = { act:"Act VI — The Way", scene:"rome",
+ text:["They put you in the Mamertine, which is a hole under the street with a second hole under that one. You are in it for eleven days.",
+       "On the eleventh a secretary comes down with a wax tablet and explains, reasonably, that a single sentence will open the door, that nobody upstairs will ever hear of it, and that your family is at home and has not eaten."],
+ choices:[
+  {t:"Say the sentence. You can repent of it afterwards.", fx:{faith:-4}, mark:"Recanted", to:"r3"},
+  {t:"Sing. There is nothing else to do down here.", fx:{faith:3,courage:2}, mark:"Faithful unto Death", to:"e_crown"},
+  {t:"Say nothing at all. For eleven more days, and then eleven more.", fx:{faith:2}, to:"r2c"}
+ ]};
+
+N.r2c = { check:function(s){ return s.courage >= 11; }, pass:"r2d", fail:"p_mamertine" };
+
+N.r2d = { act:"Act VI — The Way", scene:"rome",
+ text:["Forty days. You stop being able to tell the difference between having your eyes open and having them shut, and you keep not saying it, mostly out of habit by the end.",
+       "Then Nero opens his own throat in a villa outside the city and the whole machine stops at once, and a new magistrate goes through the backlog and finds your case tedious, and they put you out into a street you do not recognise at nine in the morning."],
+ verse:"Psalm 39:2 — I was dumb with silence, I held my peace.",
+ fx:{faith:2}, mark:"Kept Silence",
+ choices:[{t:"Walk home.", to:"r3"}]};
+
+N.r3 = { act:"Act VI — The Way", scene:"rome",
+ text:["You go home. You eat with your grandchildren and you are careful not to look at the lamp for too long. You live a while longer.",
+       "Then the world goes strange: a rumour of an old man on an island writing down what he sees, stars behaving badly, and everywhere a new order being put in place that everyone agrees is for the best."],
+ choices:[{t:"The last days.", to:"f1"}]};
+
+/* --- ACT VII --- */
+N.f1 = { act:"Act VII — The Last Day", scene:"babylon",
+ text:["There is an image again, and a decree again, and a mark on the right hand or on the forehead, and without it you cannot buy bread or sell wool or be seen by a physician.",
+       "Your family has not eaten in two days. The office is open until dark. The queue outside it is quiet, and well-behaved, and very long."],
+ verse:"Revelation 13:17 — that no man might buy or sell, save he that had the mark.",
+ choices:[
+  {t:"Take the mark. They are children. Bread is bread.", fx:{faith:-10}, mark:"Took the Mark", to:"e_lake"},
+  {t:"Refuse, and go hungry, and sit down and tell them why.", fx:{faith:2,courage:2}, mark:"Refused the Mark", to:"f2"},
+  {t:"Take no side. Go up into the hills and wait it out.", fx:{faith:-1}, to:"f2"}
+ ]};
+
+N.f2 = { act:"Act VII — The Last Day", scene:"throne",
+ text:["Then the sky is rolled back on itself like a scroll, and every mountain and island goes out of its place, and there is nowhere left standing to be neutral in.",
+       "A great white throne, and one sitting on it, and the books opened, and another book, which is the book of life. The dead are coming up out of the sea and out of the ground. Your name is read out."],
+ verse:"Revelation 20:12 — and the books were opened.",
+ choices:[{t:"Stand.", to:"judgement"}]};
+
+N.judgement = { compute:function(s){
+  if (s.faith >= 24 && !s.marks.some(function(m){ return BETRAYALS.indexOf(m) >= 0; })) return "e_city";
+  if (s.faith >= 13) return "e_fire";
+  return "e_dark";
+}};
+
+/* --- endings --- */
+N.d_fire = { end:"death", title:"Consumed in the Plain", scene:"sodom",
+ text:["The bales are exactly where you left them, which is the last correct thing that happens to you.",
+       "You get three streets. The fourth is already burning. Afterwards nothing of the plain is found, not even the shape of the streets, and nobody on the ridge can say for certain that you were ever down there at all."],
+ verse:"Genesis 19:25 — and he overthrew those cities, and all the plain."};
+
+N.d_salt = { end:"death", title:"A Pillar of Salt", scene:"salt",
+ text:["You turn. You have time to see the whole valley at once, lit from underneath, and your last thought is that it is beautiful.",
+       "Travellers on the Zoar road will point you out to their children for a thousand years, and not one of them will know your name, only what you did with your neck."],
+ verse:"Luke 17:32 — Remember Lot's wife."};
+
+N.d_firstborn = { end:"death", title:"At Midnight in Goshen", scene:"egypt",
+ text:["You are the firstborn of your father's house, which you had not thought about in years, because you had thought about the door.",
+       "Something comes down the lane a little after midnight. It does not stop at the houses either side of you. It does not need to open an iron-barred door."],
+ verse:"Exodus 12:30 — there was not a house where there was not one dead."};
+
+N.d_chariot = { end:"death", title:"Run Down in the Reeds", scene:"sea",
+ text:["The reeds are shallower than they look from the shore, and the wheels find you at the second pass.",
+       "Behind you the sea stands open all morning for everyone who walked into it, and closes over the army about an hour after it stops mattering to you."],
+ verse:"Exodus 14:28 — there remained not so much as one of them."};
+
+N.p_brick = { end:"bond", title:"Back to the Brick Pits", scene:"egypt",
+ text:["Pharaoh is generous, in the way of men who have just lost an argument with the sky and want to win something. You are not killed. You are given back your quota, and the straw is no longer provided.",
+       "You live another nineteen years in Egypt. People stop asking what the sea looked like. You find, eventually, that you have stopped being able to picture it."],
+ verse:"Exodus 5:7 — let them go and gather straw for themselves."};
+
+N.d_sword = { end:"death", title:"Taken in the Camp", scene:"sinai",
+ text:["You do not hear them coming over the noise, which is, in the end, the whole problem with the noise.",
+       "Three thousand fall that day between the gate and the far side of the camp. You are somewhere in the middle of the count, still holding the cup."],
+ verse:"Exodus 32:28 — there fell of the people that day about three thousand men."};
+
+N.d_wander = { end:"death", title:"Your Carcass in the Wilderness", scene:"wilderness",
+ text:["The sentence is passed the same night: one year of wandering for every day the spies were in the land. Forty years, and everyone who is twenty or over will die in the sand, and their children will go in instead.",
+       "You live thirty-eight more years of excellent health in a place with nothing in it. You see the hills of the land from a distance twice. Your children cross over. You are buried on the wrong side of the river by people who are in a hurry."],
+ verse:"Numbers 14:29 — your carcases shall fall in this wilderness."};
+
+N.d_wall = { end:"death", title:"Under the Wall", scene:"jericho",
+ text:["The wall does not topple. It drops straight down where it stands, all of it at once, with you on it.",
+       "The army comes in over the rubble without breaking step, and the only part of the city still standing is one strip of masonry with a scarlet cord hanging out of the window."],
+ verse:"Joshua 6:21 — and they utterly destroyed all that was in the city."};
+
+N.d_stoned = { end:"death", title:"The Valley of Achor", scene:"jericho",
+ text:["Joshua casts lots. Tribe, then family, then household, then man, and the lot comes down through the whole nation and stops on you, and it takes most of a morning to do it.",
+       "They find the gold under your tent floor where you put it. They take you out to the valley, and all Israel comes, and nobody has to be persuaded."],
+ verse:"Joshua 7:26 — and they raised over him a great heap of stones."};
+
+N.d_lions = { end:"death", title:"The Den at Sundown", scene:"lions",
+ text:["You are brave enough to open the window and not quite brave enough for what the window costs; you spend the last week of it praying with one ear on the street.",
+       "They let you down on a rope at sundown. There is no angel in the dark. There are seven lions, and they have not been fed for two days on purpose."],
+ verse:"Daniel 6:24 — the lions had the mastery of them."};
+
+N.p_mamertine = { end:"bond", title:"The Silence Under the Street", scene:"rome",
+ text:["You do not say the sentence. You also do not sing; you have not the breath for it. You simply stop answering, and after a while they stop coming down.",
+       "Twenty-two days in, then forty. Nobody writes your name in any register that survives. Somewhere above you the city goes on being the city. You are still there, and still quiet, when the cold finishes what the dark started."],
+ verse:"Hebrews 11:38 — of whom the world was not worthy."};
+
+N.e_crown = { end:"crown", title:"Faithful unto Death", scene:"throne",
+ text:["You sing for most of the night, badly, and the man in the next hole learns the words and joins in, and the guard on the stair does not stop you because he has started listening.",
+       "They take you up in the morning. It is quick, and it is public, and three people in that crowd will be baptized before the month is out because of your face. You are dead before noon and it is the smallest thing that happens to you that day."],
+ verse:"Revelation 2:10 — I will give thee a crown of life."};
+
+N.e_lake = { end:"doom", title:"The Mark on the Hand", scene:"abyss",
+ text:["It takes four seconds and does not hurt. You buy bread on the way home and the children eat, and you are right that they needed it, and you will be right about that for the rest of your life.",
+       "The rest of your life is not very long, and what comes after it is not short. There is no gate on this side, and no night, and no rest, and you keep the hand."],
+ verse:"Revelation 14:11 — and they have no rest day nor night."};
+
+N.e_dark = { end:"doom", title:"I Never Knew You", scene:"darkness",
+ text:["You have your defence ready and it is a good one. You never joined a mob, never burned anything, never hated anybody in particular. You were careful. You kept out of it.",
+       "He does not argue with any of it. He says he does not know you, and the strange part, the part you keep turning over afterwards, is that it is simply true, and you knew it was true before he said it."],
+ verse:"Matthew 7:23 — I never knew you: depart from me."};
+
+N.e_fire = { end:"win", title:"Saved, Yet So As By Fire", scene:"gate",
+ text:["Everything you built gets tested, and a great deal of it burns. The compromises go first, then the careful silences, then the years you spent being reasonable; you stand there and watch a whole life come apart in the heat.",
+       "And when there is nothing left of it, you are still standing, because the ground you were standing on was never yours. Somebody calls your name from inside the gate and does not mention any of it."],
+ verse:"1 Corinthians 3:15 — he himself shall be saved; yet so as by fire."};
+
+N.e_city = { end:"crown", title:"The City Whose Builder Is God", scene:"gate",
+ text:["The books are read all the way through and you are in them, and so is Sodom's smoke on your coat, and the flax on the roof, and the window you would not shut, and the gold you carried to the tent, and the roof you broke open for a man who could not walk.",
+       "The wall is jasper and the gates are each one pearl and they are standing open, because there is no night there to shut them against. Somebody who has been waiting a long time comes out to the gate to get you, and knows your name, and uses it."],
+ verse:"Revelation 21:25 — and the gates of it shall not be shut at all by day."};
+
+/* ========== sound ========== */
+var MOOD = { title:"holy", sodom:"fire", salt:"wind", egypt:"wind", sea:"water", sinai:"fire",
+  jericho:"wind", babylon:"stone", lions:"stone", galilee:"water", golgotha:"wind",
+  rome:"stone", wilderness:"wind", throne:"holy", gate:"holy", abyss:"fire", darkness:"stone" };
+
+var ACT_THEME = {
+  "Act I":[57,60,62,63], "Act II":[55,62,60,67], "Act III":[53,60,62,65],
+  "Act IV":[52,59,63,64], "Act V":[57,64,65,67], "Act VI":[50,57,60,62],
+  "Act VII":[48,55,60,67]
+};
+
+var Snd = (function(){
+  var ctx=null, master=null, bus=null, cur=null, pending=null, on=true, nb=null;
+  function hz(m){ return 440 * Math.pow(2, (m-69)/12); }
+  function mk(){
+    if (ctx) return true;
+    try{
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return false;
+      ctx = new AC();
+      master = ctx.createGain();
+      master.gain.value = on ? 0.26 : 0.0001;
+      master.connect(ctx.destination);
+      bus = ctx.createGain(); bus.gain.value = 0.4; bus.connect(master);
+      var len = Math.floor(2 * ctx.sampleRate);
+      nb = ctx.createBuffer(1, len, ctx.sampleRate);
+      var d = nb.getChannelData(0), last = 0;
+      for (var i=0;i<len;i++){ var w = Math.random()*2-1; last = (last + 0.02*w)/1.02; d[i] = last*3.2; }
+      return true;
+    }catch(e){ ctx = null; return false; }
+  }
+  function note(m, t, dur, type, vol){
+    if (!ctx || !on) return;
+    try{
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = type || "square";
+      o.frequency.value = hz(m);
+      var t0 = ctx.currentTime + t;
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(Math.max(0.002, vol || 0.16), t0 + 0.014);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      o.connect(g); g.connect(master);
+      o.start(t0); o.stop(t0 + dur + 0.06);
+    }catch(e){}
+  }
+  function seq(list, step, type, vol, off){
+    (list || []).forEach(function(m, i){
+      if (m != null) note(m, (off || 0) + i*step, step*1.7, type, vol);
+    });
+  }
+  function stopAmb(){
+    if (!cur || !ctx) { cur = null; return; }
+    var old = cur; cur = null;
+    try{ old.g.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.35); }catch(e){}
+    setTimeout(function(){
+      old.nodes.forEach(function(n){ try{ n.stop(); }catch(e){} try{ n.disconnect(); }catch(e){} });
+      try{ old.g.disconnect(); }catch(e){}
+    }, 1600);
+  }
+  function build(mood){
+    var nodes = [], g = ctx.createGain();
+    g.gain.value = 0.0001; g.connect(bus);
+    function noise(){ var s = ctx.createBufferSource(); s.buffer = nb; s.loop = true; nodes.push(s); return s; }
+    function osc(m, type){ var o = ctx.createOscillator(); o.type = type || "sine"; o.frequency.value = hz(m); nodes.push(o); return o; }
+    function lfo(rate, depth, param){
+      var l = ctx.createOscillator(); l.type = "sine"; l.frequency.value = rate;
+      var lg = ctx.createGain(); lg.gain.value = depth;
+      l.connect(lg); lg.connect(param); nodes.push(l);
+    }
+    function filt(type, f, q){ var b = ctx.createBiquadFilter(); b.type = type; b.frequency.value = f; if (q) b.Q.value = q; return b; }
+    var level = 0.4;
+    if (mood === "fire"){
+      var f = filt("lowpass", 560, 0.8);
+      lfo(0.6, 240, f.frequency);
+      noise().connect(f); f.connect(g); level = 0.5;
+    } else if (mood === "water"){
+      var f2 = filt("bandpass", 460, 1.3);
+      lfo(0.17, 230, f2.frequency);
+      noise().connect(f2); f2.connect(g); level = 0.45;
+    } else if (mood === "wind"){
+      var f3 = filt("highpass", 760, 0.6), f3b = filt("lowpass", 2400, 0.5);
+      lfo(0.1, 360, f3.frequency);
+      noise().connect(f3); f3.connect(f3b); f3b.connect(g); level = 0.3;
+    } else if (mood === "stone"){
+      var f4 = filt("lowpass", 290, 0.7);
+      osc(26, "triangle").connect(f4);
+      osc(33, "sine").connect(f4);
+      f4.connect(g); level = 0.3;
+    } else {
+      var f5 = filt("lowpass", 900, 0.6);
+      osc(45, "sine").connect(f5);
+      osc(52, "sine").connect(f5);
+      osc(57, "sine").connect(f5);
+      lfo(0.08, 90, f5.frequency);
+      f5.connect(g); level = 0.24;
+    }
+    nodes.forEach(function(n){ try{ n.start(); }catch(e){} });
+    g.gain.setTargetAtTime(level, ctx.currentTime, 0.9);
+    return {mood:mood, g:g, nodes:nodes};
+  }
+  return {
+    wake:function(){
+      if (!on || !mk()) return;
+      if (ctx.state === "suspended"){ try{ ctx.resume(); }catch(e){} }
+      if (pending && (!cur || cur.mood !== pending)){ stopAmb(); cur = build(pending); }
+    },
+    amb:function(mood){
+      pending = mood;
+      if (!ctx || !on) return;
+      if (cur && cur.mood === mood) return;
+      stopAmb(); cur = build(mood);
+    },
+    setOn:function(v){
+      on = v;
+      if (!v){
+        if (ctx && master){ try{ master.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.1); }catch(e){} }
+        stopAmb();
+      } else if (mk()){
+        try{ ctx.resume(); master.gain.setTargetAtTime(0.26, ctx.currentTime, 0.15); }catch(e){}
+        if (pending){ stopAmb(); cur = build(pending); }
+      }
+    },
+    isOn:function(){ return on; },
+    pick:function(){ note(74,0,0.06,"square",0.11); note(81,0.045,0.07,"square",0.08); },
+    good:function(){ seq([72,79], 0.09, "square", 0.11, 0.10); },
+    bad:function(){ seq([65,58], 0.11, "triangle", 0.12, 0.10); },
+    act:function(key){ seq(ACT_THEME[key] || [57,60,62,63], 0.22, "triangle", 0.12, 0.14); },
+    ending:function(type){
+      if (type === "death"){
+        seq([57,55,53,50], 0.28, "triangle", 0.16); note(38, 0, 2.6, "sine", 0.11);
+      } else if (type === "bond"){
+        seq([45,45,43,43,41], 0.32, "sine", 0.13); note(33, 0, 3.2, "triangle", 0.09);
+      } else if (type === "doom"){
+        note(34, 0, 3.4, "sawtooth", 0.11); note(35, 0, 3.4, "sawtooth", 0.07);
+        seq([48,47,46,45,44,43], 0.24, "square", 0.09, 0.3);
+      } else if (type === "win"){
+        seq([53,57,60,65], 0.21, "square", 0.14);
+        seq([41,45,48,53], 0.21, "triangle", 0.09);
+      } else {
+        seq([53,57,60,65,64,65,72], 0.19, "square", 0.14);
+        seq([41,45,48,53,52,53,60], 0.19, "triangle", 0.08);
+        note(29, 0, 3.6, "sine", 0.09);
+      }
+    }
+  };
+})();
+
+/* ========== state ========== */
+var S = null;
+var app = document.getElementById("app");
+var resetBtn = document.getElementById("reset");
+var footnote = document.getElementById("footnote");
+var KEY = "narrowway.save.v1";
+var SKEY = "narrowway.sound";
+var flickerTimer = null;
+var lastAct = null;
+
+function store(k,v){ try{ if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){} }
+function load(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+
+function fresh(name, origin){
+  var o = ORIGINS.filter(function(x){return x.id===origin;})[0] || ORIGINS[0];
+  var s = {name:name, origin:o.id, faith:2, wisdom:2, courage:2, mercy:2, marks:[], node:"s1"};
+  apply(s, o.fx);
+  return s;
+}
+function apply(s, fx){
+  if(!fx) return;
+  ["faith","wisdom","courage","mercy"].forEach(function(k){
+    if (typeof fx[k] === "number") s[k] = s[k] + fx[k];
+  });
+}
+function meets(s, c){
+  if(!c) return true;
+  var ok = true;
+  ["faith","wisdom","courage","mercy"].forEach(function(k){
+    if (typeof c[k] === "number" && s[k] < c[k]) ok = false;
+  });
+  if (c.mark && s.marks.indexOf(c.mark) < 0) ok = false;
+  if (c.nomark && s.marks.indexOf(c.nomark) >= 0) ok = false;
+  return ok;
+}
+function reqLabel(c){
+  var bits = [];
+  ["faith","wisdom","courage","mercy"].forEach(function(k){
+    if (typeof c[k] === "number") bits.push("Requires " + k.toUpperCase() + " " + c[k]);
+  });
+  if (c.mark) bits.push("Requires: " + c.mark);
+  return bits.join("  ·  ");
+}
+function origin(){ return ORIGINS.filter(function(x){return x.id===S.origin;})[0] || ORIGINS[0]; }
+
+/* ========== rendering ========== */
+function el(tag, cls, txt){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+
+function sceneWindow(key){
+  var wrap = el("div","window");
+  var cv = document.createElement("canvas");
+  cv.setAttribute("role","img");
+  cv.setAttribute("aria-label","Pixel illustration of the scene");
+  wrap.appendChild(cv);
+  var rows = SCENES[key] || SCENES.title;
+  drawGrid(cv, rows, 32, 14, null);
+  Snd.amb(MOOD[key] || "holy");
+  if (flickerTimer) { clearInterval(flickerTimer); flickerTimer = null; }
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var hasFire = rows.some(function(r){ return r.indexOf("O") >= 0; });
+  if (hasFire && !reduce){
+    var alts = ["#d9622b","#e0b24a","#b8432a","#f0943f"];
+    var i = 0;
+    flickerTimer = setInterval(function(){
+      if (!document.body.contains(cv)) { clearInterval(flickerTimer); flickerTimer = null; return; }
+      i++;
+      drawGrid(cv, rows, 32, 14, {O: alts[i % alts.length]});
+    }, 420);
+  }
+  return wrap;
+}
+
+function meterRow(){
+  var hud = el("div","hud");
+  var av = document.createElement("canvas");
+  av.setAttribute("aria-hidden","true");
+  hud.appendChild(av);
+  drawGrid(av, AVATAR, 8, 8, {C: origin().robe});
+
+  var who = el("div","who");
+  who.appendChild(el("div","nm", S.name));
+  who.appendChild(el("div","og", origin().name));
+  hud.appendChild(who);
+
+  var m = el("div","meters");
+  [["Faith","faith","var(--lamp)"],["Courage","courage","var(--flame)"],
+   ["Wisdom","wisdom","var(--sky)"],["Mercy","mercy","#6fae7a"]].forEach(function(spec){
+    var box = el("div","meter");
+    var lab = el("div","lab");
+    lab.appendChild(el("span",null,spec[0]));
+    var b = document.createElement("b");
+    b.textContent = String(S[spec[1]]);
+    lab.appendChild(b);
+    box.appendChild(lab);
+    var bar = el("div","bar");
+    var fill = document.createElement("i");
+    var pct = Math.max(0, Math.min(100, (S[spec[1]] / 30) * 100));
+    fill.style.width = pct + "%";
+    fill.style.setProperty("--c", spec[2]);
+    bar.appendChild(fill);
+    box.appendChild(bar);
+    m.appendChild(box);
+  });
+  hud.appendChild(m);
+  return hud;
+}
+
+function marksRow(){
+  if (!S.marks.length) return null;
+  var wrap = el("div");
+  wrap.style.display = "flex";
+  wrap.style.flexDirection = "column";
+  wrap.style.gap = "7px";
+  wrap.appendChild(el("div","section-lab","Marks upon you"));
+  var row = el("div","marks");
+  S.marks.forEach(function(m){
+    var cls = "mark" + (GOOD_MARKS.indexOf(m) >= 0 ? " good" : (BAD_MARKS.indexOf(m) >= 0 ? " bad" : ""));
+    row.appendChild(el("span",cls,m));
+  });
+  wrap.appendChild(row);
+  return wrap;
+}
+
+function go(id){
+  var node = N[id];
+  if (!node) { id = "s1"; node = N.s1; }
+  /* resolve pass-through nodes */
+  var guard = 0;
+  while (node && (node.check || node.compute) && guard++ < 10){
+    apply(S, node.fx);
+    var next = node.compute ? node.compute(S) : (node.check(S) ? node.pass : node.fail);
+    id = next; node = N[id];
+  }
+  if (!node) { id = "e_dark"; node = N.e_dark; }
+  apply(S, node.fx);
+  if (node.mark && S.marks.indexOf(node.mark) < 0) S.marks.push(node.mark);
+  S.node = id;
+  store(KEY, JSON.stringify(S));
+  draw();
+}
+
+function choose(c){
+  Snd.wake(); Snd.pick();
+  var before = S.faith;
+  apply(S, c.fx);
+  if (c.mark && S.marks.indexOf(c.mark) < 0) S.marks.push(c.mark);
+  go(c.to);
+  var now = N[S.node];
+  if (now && !now.end){
+    if (S.faith > before) Snd.good();
+    else if (S.faith < before) Snd.bad();
+  }
+}
+
+function drawStory(node){
+  var frag = document.createDocumentFragment();
+  frag.appendChild(meterRow());
+  frag.appendChild(sceneWindow(node.scene));
+  if (node.act){
+    frag.appendChild(el("div","act", node.act));
+    if (node.act !== lastAct){ lastAct = node.act; Snd.act(node.act.split(" —")[0]); }
+  }
+  var prose = el("div","prose");
+  (node.text || []).forEach(function(p){ prose.appendChild(el("p",null,p)); });
+  frag.appendChild(prose);
+  if (node.verse) frag.appendChild(el("div","verse", node.verse));
+
+  var cw = el("div","choices");
+  var live = [];
+  (node.choices || []).forEach(function(c){
+    if (c.only && !meets(S, c.only)) return;
+    live.push(c);
+  });
+  live.forEach(function(c, i){
+    var b = el("button","pick");
+    b.type = "button";
+    b.appendChild(el("span","n", String(i+1)));
+    var tx = el("span","tx");
+    tx.appendChild(document.createTextNode(c.t));
+    var ok = meets(S, c.req);
+    if (!ok){
+      b.disabled = true;
+      tx.appendChild(el("span","req", reqLabel(c.req)));
+    }
+    b.appendChild(tx);
+    b.addEventListener("click", function(){ if (ok) choose(c); });
+    cw.appendChild(b);
+  });
+  frag.appendChild(cw);
+  var mk = marksRow();
+  if (mk) frag.appendChild(mk);
+
+  app.innerHTML = "";
+  app.appendChild(frag);
+  window.__live = live;
+}
+
+function drawEnding(node){
+  var frag = document.createDocumentFragment();
+  lastAct = null;
+  frag.appendChild(sceneWindow(node.scene));
+  Snd.ending(node.end);
+  var label = {death:"You have died", bond:"You are not free", doom:"Judgment", win:"You are saved", crown:"You are saved"}[node.end] || "The end";
+  var badge = el("span","badge end-" + node.end, label);
+  var holder = el("div");
+  holder.appendChild(badge);
+  frag.appendChild(holder);
+  frag.appendChild(el("h2","end-title end-" + node.end, node.title));
+  var prose = el("div","prose");
+  (node.text || []).forEach(function(p){ prose.appendChild(el("p",null,p)); });
+  frag.appendChild(prose);
+  if (node.verse) frag.appendChild(el("div","verse", node.verse));
+
+  var led = el("div","ledger");
+  led.appendChild(el("div","section-lab", S.name + " — " + origin().name));
+  var stats = el("div","meters");
+  [["Faith","faith","var(--lamp)"],["Courage","courage","var(--flame)"],
+   ["Wisdom","wisdom","var(--sky)"],["Mercy","mercy","#6fae7a"]].forEach(function(spec){
+    var box = el("div","meter");
+    var lab = el("div","lab");
+    lab.appendChild(el("span",null,spec[0]));
+    var b = document.createElement("b"); b.textContent = String(S[spec[1]]);
+    lab.appendChild(b); box.appendChild(lab);
+    var bar = el("div","bar"); var fill = document.createElement("i");
+    fill.style.width = Math.max(0, Math.min(100,(S[spec[1]]/30)*100)) + "%";
+    fill.style.setProperty("--c", spec[2]);
+    bar.appendChild(fill); box.appendChild(bar);
+    stats.appendChild(box);
+  });
+  led.appendChild(stats);
+  var mk = marksRow();
+  if (mk) led.appendChild(mk);
+  frag.appendChild(led);
+
+  var row = el("div","row");
+  var again = el("button","go","Begin again");
+  again.type = "button";
+  again.addEventListener("click", function(){ store(KEY,null); S = null; draw(); });
+  row.appendChild(again);
+  var same = el("button","ghost","Same character, new life");
+  same.type = "button";
+  same.addEventListener("click", function(){
+    var nm = S.name, og = S.origin;
+    S = fresh(nm, og); store(KEY, JSON.stringify(S)); draw();
+  });
+  row.appendChild(same);
+  frag.appendChild(row);
+
+  app.innerHTML = "";
+  app.appendChild(frag);
+  window.__live = [];
+}
+
+function drawTitle(){
+  var frag = document.createDocumentFragment();
+  lastAct = null;
+  frag.appendChild(sceneWindow("title"));
+  var head = el("div");
+  head.style.display = "flex";
+  head.style.flexDirection = "column";
+  head.style.gap = "10px";
+  var h = el("h1",null,"THE NARROW WAY");
+  head.appendChild(h);
+  head.appendChild(el("p","tagline","You are one ordinary person, and the Scriptures happen to you from Sodom to the last day. Sixteen endings. Most of them you would not choose on purpose."));
+  frag.appendChild(head);
+
+  var card = el("div","card");
+
+  var f1 = el("div","field");
+  var lab1 = el("label","lab","What are you called");
+  lab1.setAttribute("for","nm");
+  var inp = document.createElement("input");
+  inp.type = "text"; inp.id = "nm"; inp.maxLength = 24;
+  inp.placeholder = "Enter a name";
+  inp.autocomplete = "off";
+  f1.appendChild(lab1); f1.appendChild(inp);
+  card.appendChild(f1);
+
+  var f2 = el("div","field");
+  f2.appendChild(el("span","lab","Where you come from"));
+  var grid = el("div","origins");
+  var picked = null;
+  ORIGINS.forEach(function(o){
+    var b = el("button","origin");
+    b.type = "button";
+    b.setAttribute("aria-pressed","false");
+    b.appendChild(el("span","t", o.name));
+    b.appendChild(el("span","b", o.blurb));
+    var fxTxt = Object.keys(o.fx).map(function(k){ return "+" + o.fx[k] + " " + k; }).join(", ");
+    b.appendChild(el("span","b", fxTxt));
+    b.addEventListener("click", function(){
+      picked = o.id;
+      grid.querySelectorAll(".origin").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
+      b.setAttribute("aria-pressed","true");
+      start.disabled = false;
+    });
+    grid.appendChild(b);
+  });
+  f2.appendChild(grid);
+  card.appendChild(f2);
+
+  var row = el("div","row");
+  var start = el("button","go","Begin");
+  start.type = "button"; start.disabled = true;
+  start.addEventListener("click", function(){
+    var nm = (inp.value || "").trim() || "The Wanderer";
+    S = fresh(nm, picked);
+    store(KEY, JSON.stringify(S));
+    draw();
+  });
+  row.appendChild(start);
+
+  var saved = load(KEY);
+  if (saved){
+    var cont = el("button","ghost","Continue your run");
+    cont.type = "button";
+    cont.addEventListener("click", function(){
+      try { S = JSON.parse(saved); } catch(e){ S = null; }
+      if (S) draw();
+    });
+    row.appendChild(cont);
+  }
+  card.appendChild(row);
+  frag.appendChild(card);
+
+  app.innerHTML = "";
+  app.appendChild(frag);
+  window.__live = [];
+}
+
+function draw(){
+  resetBtn.hidden = !S;
+  if (!S){ footnote.textContent = "A choose-your-own-adventure through the Scriptures. Every path is survivable. Not every path is survived."; drawTitle(); window.scrollTo(0,0); return; }
+  var node = N[S.node] || N.s1;
+  footnote.textContent = "Press 1-9 to choose. Your run is saved in this browser.";
+  if (node.end) drawEnding(node); else drawStory(node);
+  window.scrollTo({top:0, behavior:"auto"});
+}
+
+resetBtn.addEventListener("click", function(){ store(KEY,null); S = null; draw(); });
+
+var soundBtn = document.getElementById("sound");
+function syncSound(){
+  soundBtn.textContent = Snd.isOn() ? "Sound on" : "Sound off";
+  soundBtn.setAttribute("aria-pressed", Snd.isOn() ? "true" : "false");
+}
+if (load(SKEY) === "0") Snd.setOn(false);
+syncSound();
+soundBtn.addEventListener("click", function(){
+  var v = !Snd.isOn();
+  Snd.setOn(v);
+  store(SKEY, v ? "1" : "0");
+  syncSound();
+});
+
+document.addEventListener("pointerdown", function(){ Snd.wake(); });
+
+document.addEventListener("keydown", function(e){
+  Snd.wake();
+  if (e.target && (e.target.tagName === "INPUT")) return;
+  var n = parseInt(e.key, 10);
+  if (!n || !window.__live || !window.__live.length) return;
+  var c = window.__live[n-1];
+  if (!c) return;
+  if (!meets(S, c.req)) return;
+  choose(c);
+});
+
+/* restore across live updates */
+function boot(data){
+  if (data && data.S) { S = data.S; }
+  else {
+    var saved = load(KEY);
+    if (saved){ try { S = JSON.parse(saved); } catch(e){ S = null; } }
+  }
+  draw();
+}
+try {
+  if (window.claude && window.claude.hot && window.claude.hot.snapshot){
+    window.claude.hot.snapshot(function(){ return {S:S}; });
+  }
+} catch(e){}
+if (window.claude && window.claude.hot && window.claude.hot.ready) {
+  window.claude.hot.ready(boot);
+} else {
+  boot((window.claude && window.claude.hot && window.claude.hot.data) || {});
+}
+</script>
+
+</body>
+</html>
